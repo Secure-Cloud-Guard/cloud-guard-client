@@ -1,1 +1,1 @@
-# cloud-guard-client
+# Cloud Guard Client
