@@ -1,19 +1,9 @@
 
-<div class="container" [ngStyle]="{ background: isDarkMode() ? '#141414' : '#ffffff' }">
-  <mat-toolbar>
-    <div class="logo">
-      <img ngSrc="{{ isDarkMode() ? 'assets/logo-dark.svg' : 'assets/logo-light.svg' }}" alt="Cloud Guard Logo" width="240" height="30">
-    </div>
+<ng-container *ngIf="!loginService.isLoggedIn; else loggedInContent">
+  <app-login></app-login>
+</ng-container>
 
-    <span class="spacer"></span>
-
-    <button mat-icon-button (click)="themeToggle()" aria-label="Button to toggle the app theme">
-      <mat-icon svgIcon="{{ isDarkMode() ? 'sun' : 'moon' }}"></mat-icon>
-    </button>
-
-    <button mat-icon-button aria-label="User account button">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-  </mat-toolbar>
-</div>
-
+<ng-template #loggedInContent>
+  <app-header></app-header>
+  <app-dashboard></app-dashboard>
+</ng-template>

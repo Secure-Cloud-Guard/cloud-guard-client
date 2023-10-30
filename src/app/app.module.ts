@@ -1,24 +1,24 @@
 import { NgModule } from '@angular/core';
+import { SharedModule } from "@shared";
+import { AuthModule } from '@modules/auth';
 import { BrowserModule } from '@angular/platform-browser';
+import { HomeModule } from '@modules/home';
 
-import { AppComponent } from './app.component';
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {HttpClientModule} from "@angular/common/http";
-import {NgOptimizedImage} from "@angular/common";
+import { AppComponent } from '@app/app.component';
+import { HttpClientModule } from "@angular/common/http";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    SharedModule,
+    AuthModule,
     BrowserModule,
     HttpClientModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    NgOptimizedImage
+    HomeModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

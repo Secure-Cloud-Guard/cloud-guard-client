@@ -1,6 +1,29 @@
 @use '@angular/material' as mat;
 @include mat.core();
 
+// Tailwind directives
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Custom fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+// Custom logger function
+$tab: '\0009';
+$newline: '\000D\000A';
+
+@function pretty-map($map, $s: '') {
+  @each $key, $val in $map {
+    @if type-of($val) == map {
+      $s: '#{$s} #{$newline} #{$key}: ( #{pretty-map($val)} #{$newline} ), ';
+    } @else {
+      $s: '#{$s} #{$newline} #{$tab} #{$key}: #{$val}, ';
+    }
+  } // each
+  @return $s;
+}
+
 $celadon-palette: (
   50: #e8feef,
   100: #c8fcd8,
@@ -104,12 +127,103 @@ $cloud-theme-dark: mat.define-dark-theme((
   )
 ));
 
+
+// Set the custom dark theme background
+$cloud-theme-dark-color: map-get($cloud-theme-dark, color);
+$cloud-theme-dark-color-background: map-get($cloud-theme-dark-color, background);
+$cloud-theme-dark-color-background: map-merge($cloud-theme-dark-color-background, (
+  background: #1f1f1f,
+  card: #2f2f2f,
+  dialog: #2f2f2f
+));
+$cloud-theme-dark-color: map-merge($cloud-theme-dark-color, ( background: $cloud-theme-dark-color-background ));
+$cloud-theme-dark: map-merge($cloud-theme-dark, ( color: $cloud-theme-dark-color ));
+
+// log dark theme with custom dark theme background
+//@debug pretty-map($cloud-theme-dark);
+
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: 'Inter', sans-serif; }
 
 .theme-dark {
   @include mat.all-component-themes($cloud-theme-dark);
 }
 .theme-light {
   @include mat.all-component-themes($cloud-theme);
+}
+
+// custom component styles
+.custom-label {
+  @apply mb-2 text-base;
+}
+
+mat-form-field.custom-input {
+  $height: 40px !important;
+
+  body.theme-light &.mat-focused .mat-mdc-form-field-focus-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  body.theme-dark &.mat-focused .mat-mdc-form-field-focus-overlay {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .mat-mdc-text-field-wrapper {
+    border-radius: 8px !important;
+
+    .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
+      display: flex;
+      height: $height;
+      min-height: $height;
+      padding: 0 !important;
+
+      input {
+        @apply text-sm;
+      }
+    }
+
+    .mat-mdc-form-field-icon-suffix {
+      button[mat-icon-button] {
+        padding: 0 !important;
+        height: $height;
+        width: $height;
+        span {
+          height: $height;
+          width: $height;
+        }
+      }
+    }
+  }
+}
+
+button.custom-icon-btn[mat-icon-button] {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;
+  height: 35px !important;
+  width: 35px !important;
+  &.square {
+    .mat-ripple, .mat-mdc-button-persistent-ripple {
+      border-radius: 4px;
+    }
+  }
+  span {
+    height: 35px !important;
+    width: 35px !important;
+  }
+}
+
+.custom-menu-btn {
+  min-height: 38px !important;
+  min-width: 130px;
+  mat-icon {
+    font-size: 18px !important;
+    height: fit-content !important;
+    width: fit-content !important;
+  }
+  span {
+    font-size: 14px;
+    text-align: center;
+    flex-grow: 1;
+  }
 }
