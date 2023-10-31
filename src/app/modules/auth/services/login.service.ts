@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class LoginService {
-  private _isLoggedIn: boolean = true;
+  private _isLoggedIn: boolean = false;
   private _userName: string = "";
 
   /**
