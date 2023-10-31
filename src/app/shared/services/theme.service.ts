@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Theme } from "@shared";
+import { BehaviorSubject, Observable  } from "rxjs";
 
 /**
  * Service for managing the application theme.
@@ -10,11 +11,14 @@ import { Theme } from "@shared";
 })
 export class ThemeService {
   private _theme: Theme = Theme.Light;
+  private themeChangeSubject: BehaviorSubject<Theme> = new BehaviorSubject<Theme>(this._theme);
 
   constructor() {
     const storedTheme = localStorage.getItem('appTheme');
-    this._theme = (storedTheme as Theme) || this.getSystemTheme();
+    this.theme = (storedTheme as Theme) || this.getSystemTheme();
+
     document.body.classList.add(this._theme);
+    document.documentElement.classList.add(this._theme);
   }
 
   /**
@@ -32,11 +36,30 @@ export class ThemeService {
    * @param {@link Theme} theme The theme to set.
    */
   set theme(theme: Theme) {
-    document.body.classList.remove(this._theme);
-    document.body.classList.add(theme);
-
     localStorage.setItem('appTheme', theme);
+
+    const bodyClassList = document.body.classList;
+    const htmlClassList = document.documentElement.classList;
+
+    bodyClassList.remove(this._theme);
+    bodyClassList.add(theme);
+
+    // for custom sidebar
+    htmlClassList.remove(this._theme);
+    htmlClassList.add(theme);
+
     this._theme = theme;
+    this.themeChangeSubject.next(theme);
+  }
+
+  /**
+   * An observable property that emits the current theme whenever it changes.
+   * You can subscribe to this property to be notified when the theme changes in the application.
+   *
+   * @returns {@link Observable} that emits the current theme whenever it changes.
+   */
+  get onChange(): Observable<Theme> {
+    return this.themeChangeSubject.asObservable();
   }
 
   /**

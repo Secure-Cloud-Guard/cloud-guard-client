@@ -1,6 +1,10 @@
 @use '@angular/material' as mat;
 @include mat.core();
 
+// Custom global styles
+@import "styles/sidebar";
+@import "styles/custom-mat-components";
+
 // Tailwind directives
 @tailwind base;
 @tailwind components;
@@ -150,80 +154,4 @@ body { margin: 0; font-family: 'Inter', sans-serif; }
 }
 .theme-light {
   @include mat.all-component-themes($cloud-theme);
-}
-
-// custom component styles
-.custom-label {
-  @apply mb-2 text-base;
-}
-
-mat-form-field.custom-input {
-  $height: 40px !important;
-
-  body.theme-light &.mat-focused .mat-mdc-form-field-focus-overlay {
-    background: rgba(0, 0, 0, 0.3);
-  }
-  body.theme-dark &.mat-focused .mat-mdc-form-field-focus-overlay {
-    background: rgba(255, 255, 255, 0.3);
-  }
-
-  .mat-mdc-text-field-wrapper {
-    border-radius: 8px !important;
-
-    .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
-      display: flex;
-      height: $height;
-      min-height: $height;
-      padding: 0 !important;
-
-      input {
-        @apply text-sm;
-      }
-    }
-
-    .mat-mdc-form-field-icon-suffix {
-      button[mat-icon-button] {
-        padding: 0 !important;
-        height: $height;
-        width: $height;
-        span {
-          height: $height;
-          width: $height;
-        }
-      }
-    }
-  }
-}
-
-button.custom-icon-btn[mat-icon-button] {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  padding: 0 !important;
-  height: 35px !important;
-  width: 35px !important;
-  &.square {
-    .mat-ripple, .mat-mdc-button-persistent-ripple {
-      border-radius: 4px;
-    }
-  }
-  span {
-    height: 35px !important;
-    width: 35px !important;
-  }
-}
-
-.custom-menu-btn {
-  min-height: 38px !important;
-  min-width: 130px;
-  mat-icon {
-    font-size: 18px !important;
-    height: fit-content !important;
-    width: fit-content !important;
-  }
-  span {
-    font-size: 14px;
-    text-align: center;
-    flex-grow: 1;
-  }
 }

@@ -1,5 +1,6 @@
 <div class="w-screen h-screen">
   <app-theme-switch class="absolute top-2 right-2"></app-theme-switch>
+  <app-particles></app-particles>
 
   <div class="w-11/12 sm:w-[400px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
     <div class="flex justify-center mb-8 mr-5">
@@ -14,7 +15,7 @@
         <label for="password" class="custom-label">Password</label>
         <mat-form-field class="custom-input">
           <input autocomplete="off" id="password" matInput (keydown.enter)="onLogin()" [(ngModel)]="password" [type]="hide ? 'password' : 'text'" type="password" placeholder="Password" name="password" required>
-          <button mat-icon-button matSuffix (click)="passToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <button mat-icon-button matSuffix (click)="passwordToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
             <mat-icon class="scale-75">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
         </mat-form-field>

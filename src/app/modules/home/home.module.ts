@@ -4,11 +4,14 @@ import { DashboardComponent } from '@modules/home/components/dashboard/dashboard
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { SidenavListComponent } from './components/sidenav-list/sidenav-list.component';
 
 
 @NgModule({
   declarations: [
-    DashboardComponent
+    DashboardComponent,
+    SidenavListComponent
   ],
   exports: [
     DashboardComponent
@@ -17,7 +20,8 @@ import { MatIconModule } from "@angular/material/icon";
     CommonModule,
     MatSidenavModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ]
 })
 export class HomeModule { }

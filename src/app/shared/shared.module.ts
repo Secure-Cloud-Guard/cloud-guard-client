@@ -6,6 +6,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { NgOptimizedImage } from "@angular/common";
 import { HeaderComponent, ThemeSwitchComponent, LogoComponent } from "@shared/components";
 import { MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { MatMenuModule } from "@angular/material/menu";
     MatToolbarModule,
     MatButtonModule,
     NgOptimizedImage,
-    MatMenuModule
+    MatMenuModule,
+    MatTooltipModule
   ]
 })
 export class SharedModule { }

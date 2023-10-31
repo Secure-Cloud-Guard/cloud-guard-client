@@ -1,0 +1,27 @@
+<div class="relative w-full max-w-full overflow-hidden h-full">
+  <ng-container *ngIf="!shortSidenav; else shortSidenavContent">
+    <button class="custom-icon-btn square !absolute top-1 right-1 !z-10" mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse Sidenav">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+    <div class="flex flex-col gap-2 mt-5">
+      <ng-container *ngFor="let item of items">
+        <a mat-button class="flex items-center !justify-start gap-4 ml-4 mr-4">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </ng-container>
+    </div>
+  </ng-container>
+  <ng-template #shortSidenavContent>
+    <div class="flex flex-col gap-2 mt-2 items-center">
+      <button class="custom-icon-btn square" mat-icon-button (click)="toggleSidenav()" matTooltip="Expand Sidenav">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+      <ng-container *ngFor="let item of items">
+        <button mat-icon-button class="custom-icon-btn square">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </button>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>

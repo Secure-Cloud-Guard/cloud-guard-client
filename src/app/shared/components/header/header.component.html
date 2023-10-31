@@ -1,9 +1,11 @@
-<mat-toolbar class="shadow-lg fixed top-0 z-40">
+<mat-toolbar class="shadow-lg fixed top-0 z-40 transition-all">
   <app-logo></app-logo>
   <span class="grow"></span>
   <app-theme-switch></app-theme-switch>
 
-  <button class="!flex" mat-icon-button [matMenuTriggerFor]="menu" aria-label="User account button"><mat-icon>account_circle</mat-icon></button>
+  <button class="!flex" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Open User Menu" aria-label="User account button">
+    <mat-icon>account_circle</mat-icon>
+  </button>
   <mat-menu #menu="matMenu">
     <button class="custom-menu-btn" mat-menu-item>
       <mat-icon>account_circle</mat-icon>

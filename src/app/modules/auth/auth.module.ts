@@ -8,10 +8,13 @@ import { MatButtonModule } from "@angular/material/button";
 import { FormsModule } from "@angular/forms";
 import { MatIconModule } from "@angular/material/icon";
 import { SharedModule } from "@shared";
+import { ParticlesComponent } from './components/particles/particles.component';
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
-    LoginComponent
+    LoginComponent,
+    ParticlesComponent
   ],
   exports: [
     LoginComponent
@@ -25,7 +28,8 @@ import { SharedModule } from "@shared";
     FormsModule,
     MatIconModule,
     NgOptimizedImage,
-    SharedModule
+    SharedModule,
+    MatTooltipModule
   ]
 })
 export class AuthModule { }
