@@ -6,6 +6,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { SidenavListComponent } from './components/sidenav-list/sidenav-list.component';
+import {MatTabsModule} from "@angular/material/tabs";
 
 
 @NgModule({
@@ -16,12 +17,13 @@ import { SidenavListComponent } from './components/sidenav-list/sidenav-list.com
   exports: [
     DashboardComponent
   ],
-  imports: [
-    CommonModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule
-  ]
+    imports: [
+        CommonModule,
+        MatSidenavModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatTabsModule
+    ]
 })
 export class HomeModule { }

@@ -1,5 +1,5 @@
-<mat-sidenav-container class="mt-16 transition-all">
-  <mat-sidenav mode="side" opened [ngClass]="shortSidenav ? 'w-14' : 'w-60'" class="!fixed !top-16 !z-30 !transition-all">
+<mat-sidenav-container class="!top-14 min-[600px]:!top-16 max-sm:!hidden transition-all">
+  <mat-sidenav mode="side" opened [ngClass]="shortSidenav ? 'w-14' : 'w-60'" class="!fixed !top-14 min-[600px]:!top-16 !z-30 !transition-all">
     <app-sidenav-list [items]="sidenavItemList" [shortSidenav]="shortSidenav" (toggleSidenavState)="toggleSidenav()"></app-sidenav-list>
   </mat-sidenav>
   <mat-sidenav-content [ngClass]="shortSidenav ? '!ml-14' : '!ml-60'" class="min-h-screen py-4 px-5 !transition-all">
@@ -15,3 +15,33 @@
     <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<mat-tab-group headerPosition="below" class="custom-tab-group !flex sm:!hidden fixed bottom-0 left-0 right-0 top-14">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>lock</mat-icon>
+    </ng-template>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet.</p>
+    <p>Egestas hendrerit felis viderer feugiat.</p>
+    <p>Egestas felis viderer feugiat ultrices magna</p>
+    <p>Egestas hendrerit viderer feugiat ultrices magna utamur movet.</p>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>cloud</mat-icon>
+    </ng-template>
+    Content 2
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>account_circle</mat-icon>
+    </ng-template>
+    Content 3
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon>settings</mat-icon>
+    </ng-template>
+    Content 4
+  </mat-tab>
+</mat-tab-group>

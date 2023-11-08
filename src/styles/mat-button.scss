@@ -1,0 +1,61 @@
+button.custom-icon-btn[mat-icon-button] {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;
+  height: 35px !important;
+  width: 35px !important;
+  &.square {
+    .mat-ripple, .mat-mdc-button-persistent-ripple {
+      border-radius: 4px;
+    }
+  }
+  span {
+    height: 35px !important;
+    width: 35px !important;
+  }
+}
+
+.custom-menu-btn {
+  min-height: 38px !important;
+  min-width: 130px;
+  mat-icon {
+    font-size: 18px !important;
+    height: fit-content !important;
+    width: fit-content !important;
+  }
+  span {
+    font-size: 14px;
+    text-align: center;
+    flex-grow: 1;
+  }
+}
+
+button[mat-icon-button]{
+  // add custom sizes here
+
+  $small-size-button: 35px !important;
+  $small-size-icon: 20px !important;
+
+  &.icon-button-small {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+    height: $small-size-button;
+    width: $small-size-button;
+    mat-icon {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      svg {
+        height: $small-size-icon;
+        width: $small-size-icon;
+      }
+    }
+    span {
+      height: $small-size-button;
+      width: $small-size-button;
+    }
+  }
+}
