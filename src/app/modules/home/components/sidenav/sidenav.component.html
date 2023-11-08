@@ -1,0 +1,43 @@
+<mat-sidenav-container class="!top-14 min-[600px]:!top-16 max-sm:!hidden transition-all">
+  <mat-sidenav mode="side" opened [ngClass]="shortSidenav ? 'w-14' : 'w-60'" class="!fixed !top-14 min-[600px]:!top-16 !z-30 !transition-all">
+    <div class="relative w-full max-w-full overflow-hidden h-full">
+      <ng-container *ngIf="!shortSidenav; else shortSidenavContent">
+        <button class="custom-icon-btn square !absolute top-1 right-1 !z-10" mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse Sidenav">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+        <div class="flex flex-col gap-2 mt-7">
+          <ng-container *ngFor="let item of items">
+            <a mat-button class="flex items-center !justify-start gap-4 ml-4 mr-4">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
+            </a>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-template #shortSidenavContent>
+        <div class="flex flex-col gap-2 mt-2 items-center">
+          <button class="custom-icon-btn square" mat-icon-button (click)="toggleSidenav()" matTooltip="Expand Sidenav">
+            <mat-icon>keyboard_arrow_right</mat-icon>
+          </button>
+          <ng-container *ngFor="let item of items">
+            <button mat-icon-button class="custom-icon-btn square">
+              <mat-icon>{{ item.icon }}</mat-icon>
+            </button>
+          </ng-container>
+        </div>
+      </ng-template>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content [ngClass]="shortSidenav ? '!ml-14' : '!ml-60'" class="min-h-screen py-4 px-5 !transition-all">
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+    <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet. Lobortis solet ante inani legimus dolorem.</p>
+  </mat-sidenav-content>
+</mat-sidenav-container>

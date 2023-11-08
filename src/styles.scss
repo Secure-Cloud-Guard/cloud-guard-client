@@ -37,6 +37,39 @@ $newline: '\000D\000A';
   @return $s;
 }
 
+$medium-purple-palette: (
+  50 : #eae8f8,
+  100 : #cac6ef,
+  200 : #a7a1e4,
+  300 : #847bd9,
+  400 : #695ed0,
+  500 : #4f42c8,
+  600 : #483cc2,
+  700 : #3f33bb,
+  800 : #362bb4,
+  900 : #261da7,
+  A100 : #e1e0ff,
+  A200 : #b1adff,
+  A400 : #807aff,
+  A700 : #6860ff,
+  contrast: (
+    50 : rgba(black, 0.87),
+    100 : rgba(black, 0.87),
+    200 : rgba(black, 0.87),
+    300 : rgba(black, 0.87),
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : rgba(black, 0.87),
+    A200 : rgba(black, 0.87),
+    A400 : rgba(black, 0.87),
+    A700 : #ffffff,
+  )
+);
+
 $celadon-palette: (
   50: #e8feef,
   100: #c8fcd8,
@@ -59,39 +92,6 @@ $celadon-palette: (
     700: white,
     800: white,
     900: white,
-  )
-);
-
-$aero-palette: (
-  50: #e1f4fc,
-  100: #b5e4f7,
-  200: #86d2f1,
-  300: #5bc0eb,
-  400: #40b2e8,
-  500: #28a6e5,
-  600: #2498d7,
-  700: #1d85c3,
-  800: #1874b0,
-  900: #0a558f,
-  A100: #c2e4ff,
-  A200: #addcff,
-  A400: #1f9eff,
-  A700: #00518f,
-  contrast: (
-    50: rgba(black, 0.87),
-    100: rgba(black, 0.87),
-    200: rgba(black, 0.87),
-    300: rgba(black, 0.87),
-    400: rgba(black, 0.87),
-    500: rgba(black, 0.87),
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-    A100: rgba(black, 0.87),
-    A200: rgba(black, 0.87),
-    A400: white,
-    A700: white,
   )
 );
 
@@ -120,8 +120,8 @@ $crimson-palette: (
   )
 );
 
-$cloud-primary: mat.define-palette($celadon-palette, 200, 50, 400);
-$cloud-accent: mat.define-palette($aero-palette, 300, 100, 500);
+$cloud-primary: mat.define-palette($medium-purple-palette, 300, 100, 500);
+$cloud-accent: mat.define-palette($celadon-palette, 200, 50, 400);
 $cloud-warn: mat.define-palette($crimson-palette, 600);
 
 $cloud-theme: mat.define-light-theme((

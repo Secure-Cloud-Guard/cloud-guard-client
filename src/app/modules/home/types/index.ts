@@ -1,1 +1,1 @@
-export * from './sidenav-item'
+export * from './types'

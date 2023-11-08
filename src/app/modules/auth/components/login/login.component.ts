@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginService } from "@modules/auth";
+import { ThemeColorService } from "@shared";
 
 
 @Component({
@@ -12,7 +13,8 @@ export class LoginComponent {
   hide: boolean = true;
 
   constructor(
-    private loginService: LoginService
+    private loginService: LoginService,
+    protected readonly themeColorService: ThemeColorService
   ) {}
 
   onLogin() {
