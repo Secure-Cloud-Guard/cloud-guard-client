@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { LoginService } from "@modules/auth";
-import { ThemeColorService } from "@shared";
+import { LoginService } from "@modules/auth/services";
+import { ThemeColorService } from "@shared/services";
 
 
 @Component({

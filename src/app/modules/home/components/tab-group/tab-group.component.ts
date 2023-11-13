@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import { ThemeColorService } from "@shared";
+import { ThemeColorService } from "@shared/services";
 import { TabGroupItem } from "@modules/home/types";
 
 @Component({

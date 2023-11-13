@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from "rxjs";
-import { Theme, ThemeService } from "@shared";
+import { ThemeService } from "@shared/services";
+import { Theme } from "@shared/types";
 
 declare var particlesJS: any;
 

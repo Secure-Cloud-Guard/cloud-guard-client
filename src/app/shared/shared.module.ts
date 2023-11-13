@@ -4,24 +4,26 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatButtonModule } from "@angular/material/button";
 import { NgOptimizedImage } from "@angular/common";
-import { HeaderComponent, ThemeSwitchComponent, LogoComponent } from "@shared/components";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { GradientBackgroundComponent } from './components/gradient-background/gradient-background.component';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { HeaderComponent, ThemeSwitchComponent, LogoComponent, GradientBackgroundComponent, AlertComponent } from "@shared/components";
+
 
 @NgModule({
   declarations: [
     HeaderComponent,
     ThemeSwitchComponent,
     LogoComponent,
+    GradientBackgroundComponent,
+    AlertComponent
+  ],
+  exports: [
+    HeaderComponent,
+    ThemeSwitchComponent,
+    LogoComponent,
     GradientBackgroundComponent
   ],
-    exports: [
-        HeaderComponent,
-        ThemeSwitchComponent,
-        LogoComponent,
-        GradientBackgroundComponent
-    ],
   imports: [
     CommonModule,
     MatIconModule,
@@ -29,7 +31,8 @@ import { GradientBackgroundComponent } from './components/gradient-background/gr
     MatButtonModule,
     NgOptimizedImage,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ]
 })
 export class SharedModule { }

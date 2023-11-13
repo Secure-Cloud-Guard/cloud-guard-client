@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Theme, ThemeService } from "@shared";
+import { ThemeService } from "@shared/services";
+import { Theme } from "@shared/types";
 
 @Injectable({
   providedIn: 'root'

@@ -1,9 +1,12 @@
 
-<ng-container *ngIf="!loginService.isLoggedIn; else loggedInContent">
-  <app-login></app-login>
-</ng-container>
 
-<ng-template #loggedInContent>
-  <app-header></app-header>
-  <app-dashboard></app-dashboard>
-</ng-template>
+<router-outlet></router-outlet>
+
+<!--<ng-container *ngIf="!loginService.isLoggedIn; else loggedInContent">-->
+<!--  <app-login></app-login>-->
+<!--</ng-container>-->
+
+<!--<ng-template #loggedInContent>-->
+<!--  <app-header></app-header>-->
+<!--  <app-dashboard></app-dashboard>-->
+<!--</ng-template>-->

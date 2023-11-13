@@ -1,3 +1,3 @@
-<button class="!flex max-sm:icon-button-small" mat-icon-button (click)="themeToggle()" matTooltip="Toggle Theme" aria-label="Button to toggle the app theme">
+<button class="!flex max-sm:small" mat-icon-button (click)="themeToggle()" matTooltip="Toggle Theme" aria-label="Button to toggle the app theme">
   <mat-icon svgIcon="{{ themeService.theme === Theme.Dark ? 'sun' : 'moon' }}"></mat-icon>
 </button>

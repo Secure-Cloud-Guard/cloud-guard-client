@@ -1,0 +1,31 @@
+
+.mat-mdc-snack-bar-container .mat-mdc-snack-bar-label {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.theme-light .mat-mdc-snack-bar-container {
+  &.error-snackbar {
+    --mdc-snackbar-container-color: rgba(210, 33, 33, 0.7);
+    --mat-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+  &.success-snackbar {
+    --mdc-snackbar-container-color: rgba(91, 238, 115, 0.7);
+    --mat-snack-bar-button-color: rgba(0, 0, 0, 0.87);
+    --mdc-snackbar-supporting-text-color: rgba(0, 0, 0, 0.87);
+  }
+}
+
+.theme-dark .mat-mdc-snack-bar-container {
+  &.error-snackbar {
+    --mdc-snackbar-container-color: rgb(255, 158, 158);
+    --mat-snack-bar-button-color: rgba(0, 0, 0, 0.87);
+    --mdc-snackbar-supporting-text-color: rgba(0, 0, 0, 0.87);
+  }
+  &.success-snackbar {
+    --mdc-snackbar-container-color: rgb(170, 255, 183);
+    --mat-snack-bar-button-color: rgba(0, 0, 0, 0.87);
+    --mdc-snackbar-supporting-text-color: rgba(0, 0, 0, 0.87);
+  }
+}

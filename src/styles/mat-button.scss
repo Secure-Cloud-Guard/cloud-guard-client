@@ -32,12 +32,36 @@ button.custom-icon-btn[mat-icon-button] {
 }
 
 button[mat-icon-button]{
-  // add custom sizes here
+  $very-small-size-button: 30px !important;
+  $very-small-size-icon: 15px !important;
+
+  &.very-small {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+    height: $very-small-size-button;
+    width: $very-small-size-button;
+    mat-icon {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      font-size: $very-small-size-icon;
+      svg {
+        height: $very-small-size-icon;
+        width: $very-small-size-icon;
+      }
+    }
+    span {
+      height: $very-small-size-button;
+      width: $very-small-size-button;
+    }
+  }
 
   $small-size-button: 35px !important;
   $small-size-icon: 20px !important;
 
-  &.icon-button-small {
+  &.small {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -48,6 +72,7 @@ button[mat-icon-button]{
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
+      font-size: $small-size-icon;
       svg {
         height: $small-size-icon;
         width: $small-size-icon;

@@ -1,3 +1,5 @@
-export { HeaderComponent } from './header/header.component';
-export { ThemeSwitchComponent } from './theme-switch/theme-switch.component';
-export { LogoComponent } from './logo/logo.component';
+export * from './header/header.component'
+export * from './theme-switch/theme-switch.component'
+export * from './logo/logo.component'
+export * from './gradient-background/gradient-background.component'
+export * from './alert/alert.component'

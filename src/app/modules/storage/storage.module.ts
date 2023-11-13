@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StorageComponent } from './components/storage/storage.component';
-
+import { StorageComponent } from '@modules/storage/components';
 
 
 @NgModule({

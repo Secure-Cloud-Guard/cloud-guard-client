@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ThemeService, Theme } from "@shared";
+import { ThemeService } from "@shared/services";
+import { Theme } from "@shared/types";
 
 @Component({
   selector: 'app-gradient-background',

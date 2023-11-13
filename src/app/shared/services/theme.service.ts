@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Theme } from "@shared";
+import { Theme } from "@shared/types";
 import { BehaviorSubject, Observable  } from "rxjs";
 
 /**
