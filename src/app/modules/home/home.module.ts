@@ -5,7 +5,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTabsModule } from "@angular/material/tabs";
-import { RouterOutlet } from "@angular/router";
+import { RouterLink, RouterOutlet } from "@angular/router";
 import { DashboardComponent, SidenavComponent, TabGroupComponent } from '@modules/home/components';
 import { SharedModule } from "@shared";
 
@@ -19,15 +19,16 @@ import { SharedModule } from "@shared";
   exports: [
     DashboardComponent
   ],
-  imports: [
-    CommonModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatTabsModule,
-    SharedModule,
-    RouterOutlet
-  ]
+    imports: [
+        CommonModule,
+        MatSidenavModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatTabsModule,
+        SharedModule,
+        RouterOutlet,
+        RouterLink
+    ]
 })
 export class HomeModule { }

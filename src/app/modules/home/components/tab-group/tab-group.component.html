@@ -4,10 +4,16 @@
       <ng-template mat-tab-label>
         <mat-icon>{{ item.icon }}</mat-icon>
       </ng-template>
-      <p>Egestas hendrerit felis viderer feugiat ultrices magna utamur movet.</p>
-      <p>Egestas hendrerit felis viderer feugiat.</p>
-      <p>Egestas felis viderer feugiat ultrices magna</p>
-      <p>Egestas hendrerit viderer feugiat ultrices magna utamur movet.</p>
+      <router-outlet></router-outlet>
     </mat-tab>
   </ng-container>
 </mat-tab-group>
+
+<!--<nav mat-tab-nav-bar [color]="themeColorService.getPrimaryColor()" [tabPanel]="tabPanel">-->
+<!--  @for (link of links; track link) {-->
+<!--  <a mat-tab-link-->
+<!--    (click)="activeLink = link"-->
+<!--    [active]="activeLink == link"> {{link}} </a>-->
+<!--  }-->
+<!--</nav>-->
+<!--<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>-->

@@ -32,55 +32,56 @@ button.custom-icon-btn[mat-icon-button] {
 }
 
 button[mat-icon-button]{
-  $very-small-size-button: 30px !important;
-  $very-small-size-icon: 15px !important;
+  $very-small-button: 30px !important;
+  $very-small-icon: 15px !important;
 
-  &.very-small {
+  $small-button: 35px !important;
+  $small-icon: 20px !important;
+
+  $medium-button: 40px !important;
+  $medium-icon: 25px !important;
+
+  &.very-small, &.small, &.medium {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
     padding: 0 !important;
-    height: $very-small-size-button;
-    width: $very-small-size-button;
+
     mat-icon {
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
-      font-size: $very-small-size-icon;
-      svg {
-        height: $very-small-size-icon;
-        width: $very-small-size-icon;
-      }
-    }
-    span {
-      height: $very-small-size-button;
-      width: $very-small-size-button;
     }
   }
 
-  $small-size-button: 35px !important;
-  $small-size-icon: 20px !important;
+  @mixin button-size($height, $width, $icon-size) {
+    height: $height;
+    width: $width;
 
-  &.small {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 0 !important;
-    height: $small-size-button;
-    width: $small-size-button;
     mat-icon {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      font-size: $small-size-icon;
+      font-size: $icon-size;
+
       svg {
-        height: $small-size-icon;
-        width: $small-size-icon;
+        height: $icon-size;
+        width: $icon-size;
       }
     }
+
     span {
-      height: $small-size-button;
-      width: $small-size-button;
+      height: $height;
+      width: $width;
     }
+  }
+
+  &.very-small {
+    @include button-size($very-small-button, $very-small-button, $very-small-icon);
+  }
+
+  &.small {
+    @include button-size($small-button, $small-button, $small-icon);
+  }
+
+  &.medium {
+    @include button-size($medium-button, $medium-button, $medium-icon);
   }
 }

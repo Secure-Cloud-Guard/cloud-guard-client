@@ -6,12 +6,17 @@
 
 .theme-light .mat-mdc-snack-bar-container {
   &.error-snackbar {
-    --mdc-snackbar-container-color: rgba(210, 33, 33, 0.7);
+    --mdc-snackbar-container-color: rgb(224, 96, 96);
     --mat-snack-bar-button-color: #fff;
     --mdc-snackbar-supporting-text-color: #fff;
   }
   &.success-snackbar {
-    --mdc-snackbar-container-color: rgba(91, 238, 115, 0.7);
+    --mdc-snackbar-container-color: rgb(151, 245, 144);
+    --mat-snack-bar-button-color: rgba(0, 0, 0, 0.87);
+    --mdc-snackbar-supporting-text-color: rgba(0, 0, 0, 0.87);
+  }
+  &.info-snackbar {
+    --mdc-snackbar-container-color: rgb(149, 209, 241);
     --mat-snack-bar-button-color: rgba(0, 0, 0, 0.87);
     --mdc-snackbar-supporting-text-color: rgba(0, 0, 0, 0.87);
   }
@@ -19,13 +24,18 @@
 
 .theme-dark .mat-mdc-snack-bar-container {
   &.error-snackbar {
-    --mdc-snackbar-container-color: rgb(255, 158, 158);
-    --mat-snack-bar-button-color: rgba(0, 0, 0, 0.87);
-    --mdc-snackbar-supporting-text-color: rgba(0, 0, 0, 0.87);
+    --mdc-snackbar-container-color: #2f2f2f;
+    --mat-snack-bar-button-color: rgb(255, 158, 158);
+    --mdc-snackbar-supporting-text-color: rgb(255, 158, 158);
   }
   &.success-snackbar {
-    --mdc-snackbar-container-color: rgb(170, 255, 183);
-    --mat-snack-bar-button-color: rgba(0, 0, 0, 0.87);
-    --mdc-snackbar-supporting-text-color: rgba(0, 0, 0, 0.87);
+    --mdc-snackbar-container-color: #2f2f2f;
+    --mat-snack-bar-button-color: rgb(170, 255, 183);
+    --mdc-snackbar-supporting-text-color: rgb(170, 255, 183);
+  }
+  &.info-snackbar {
+    --mdc-snackbar-container-color: #2f2f2f;
+    --mat-snack-bar-button-color: rgb(160, 223, 253);
+    --mdc-snackbar-supporting-text-color: rgb(160, 223, 253);
   }
 }

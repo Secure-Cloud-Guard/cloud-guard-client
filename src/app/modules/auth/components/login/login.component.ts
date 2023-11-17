@@ -15,7 +15,7 @@ export class LoginComponent {
   constructor(
     private loginService: LoginService,
     protected readonly themeColorService: ThemeColorService
-  ) {}
+  ) { }
 
   onLogin() {
     this.loginService.login(this.username, this.password);

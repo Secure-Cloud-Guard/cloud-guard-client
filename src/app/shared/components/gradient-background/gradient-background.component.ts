@@ -13,5 +13,5 @@ export class GradientBackgroundComponent {
 
   constructor(
     protected readonly themeService: ThemeService
-  ) {}
+  ) { }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppRoutes } from "@shared/const";
+import { AppRoutes, LocalStorageKeys } from "@shared/const";
 import { Router } from "@angular/router";
 import { AlertService } from "@shared/services";
 
@@ -17,7 +17,7 @@ export class LoginService {
     private router: Router,
     private alertService: AlertService
   ) {
-    this._isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    this._isLoggedIn = localStorage.getItem(LocalStorageKeys.IS_LOGGED_IN) === 'true';
   }
 
   /**
@@ -35,9 +35,9 @@ export class LoginService {
     }
 
     this._userName = username;
-    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem(LocalStorageKeys.IS_LOGGED_IN, 'true');
 
-    this.router.navigate([AppRoutes.DASHBOARD]).then(() => {
+    this.router.navigate([AppRoutes.DASHBOARD.relativePath]).then(() => {
       this.alertService.success('You have successfully logged in!')
     });
 
@@ -46,8 +46,10 @@ export class LoginService {
 
   logout(): void {
     this._isLoggedIn = false;
-    localStorage.removeItem('isLoggedIn');
-    this.router.navigate([AppRoutes.LOGIN]);
+    localStorage.removeItem(LocalStorageKeys.IS_LOGGED_IN);
+    this.router.navigate([AppRoutes.LOGIN.relativePath]).then(() => {
+      this.alertService.info('You have been successfully logged out.')
+    });
   }
 
   /**

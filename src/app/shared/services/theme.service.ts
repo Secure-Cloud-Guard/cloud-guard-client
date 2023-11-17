@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Theme } from "@shared/types";
 import { BehaviorSubject, Observable  } from "rxjs";
+import { LocalStorageKeys } from "@shared/const";
 
 /**
  * Service for managing the application theme.
@@ -14,7 +15,7 @@ export class ThemeService {
   private themeChangeSubject: BehaviorSubject<Theme> = new BehaviorSubject<Theme>(this._theme);
 
   constructor() {
-    const storedTheme = localStorage.getItem('appTheme');
+    const storedTheme = localStorage.getItem(LocalStorageKeys.APP_THEME);
     this.theme = (storedTheme as Theme) || this.getSystemTheme();
 
     document.body.classList.add(this._theme);
@@ -33,10 +34,10 @@ export class ThemeService {
   /**
    * Set the application theme.
    *
-   * @param {@link Theme} theme The theme to set.
+   * @param {Theme} theme The theme to set.
    */
   set theme(theme: Theme) {
-    localStorage.setItem('appTheme', theme);
+    localStorage.setItem(LocalStorageKeys.APP_THEME, theme);
 
     const bodyClassList = document.body.classList;
     const htmlClassList = document.documentElement.classList;

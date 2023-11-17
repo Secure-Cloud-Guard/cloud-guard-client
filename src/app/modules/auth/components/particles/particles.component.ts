@@ -28,7 +28,7 @@ export class ParticlesComponent implements OnInit, OnDestroy {
 
   constructor(
     protected readonly themeService: ThemeService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.themeChangeSubscription = this.themeService.onChange.subscribe(this.loadParticles);

@@ -7,7 +7,7 @@
         </button>
         <div class="flex flex-col gap-2 mt-7">
           <ng-container *ngFor="let item of items">
-            <a mat-button class="flex items-center !justify-start gap-4 ml-4 mr-4">
+            <a mat-button [routerLink]="item.url" class="flex items-center !justify-start gap-4 ml-4 mr-4">
               <mat-icon>{{ item.icon }}</mat-icon>
               <span>{{ item.label }}</span>
             </a>
@@ -20,7 +20,7 @@
             <mat-icon>keyboard_arrow_right</mat-icon>
           </button>
           <ng-container *ngFor="let item of items">
-            <button mat-icon-button class="custom-icon-btn square">
+            <button mat-icon-button [routerLink]="item.url" class="custom-icon-btn square">
               <mat-icon>{{ item.icon }}</mat-icon>
             </button>
           </ng-container>

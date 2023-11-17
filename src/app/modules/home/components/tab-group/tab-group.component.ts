@@ -11,5 +11,5 @@ export class TabGroupComponent {
 
   constructor(
     protected readonly themeColorService: ThemeColorService
-  ) {}
+  ) { }
 }

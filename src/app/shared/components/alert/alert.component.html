@@ -1,6 +1,7 @@
 
-<div class="flex justify-center items-center mr-4">
-  <span class="text-sm font-medium">{{ data }}</span>
+<div class="flex justify-center items-center ml-6 mr-5">
+  <mat-icon class="small !absolute left-3">{{ getIconName() }}</mat-icon>
+  <span class="text-sm font-medium">{{ data.message }}</span>
   <button class="custom-icon-btn very-small square !absolute right-1" mat-icon-button (click)="dismissAlert()">
     <mat-icon>close</mat-icon>
   </button>

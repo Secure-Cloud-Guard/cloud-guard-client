@@ -12,6 +12,6 @@ export class HeaderComponent {
 
   constructor(
     protected readonly loginService: LoginService
-  ) {}
+  ) { }
 
 }

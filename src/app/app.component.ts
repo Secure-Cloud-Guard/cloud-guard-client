@@ -8,7 +8,4 @@ import { LoginService } from "@modules/auth/services";
 })
 export class AppComponent {
 
-  constructor(
-    protected readonly loginService: LoginService
-  ) {}
 }

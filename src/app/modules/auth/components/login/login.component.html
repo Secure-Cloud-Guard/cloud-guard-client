@@ -16,7 +16,7 @@
         <label for="password" class="custom-label">Password</label>
         <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">
           <input autocomplete="off" id="password" matInput (keydown.enter)="onLogin()" [(ngModel)]="password" [type]="hide ? 'password' : 'text'" type="password" placeholder="Password" name="password" required>
-          <button mat-icon-button matSuffix (click)="passwordToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <button class="medium" mat-icon-button matSuffix (click)="passwordToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
             <mat-icon class="scale-75">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
         </mat-form-field>
