@@ -23,3 +23,14 @@ export interface TabGroupItem {
   icon: string,
   url: string
 }
+
+/**
+ * Enum representing different types of navigation.
+ * Use this enum to define the possible navigation types in your application.
+ *
+ * @enum {string}
+ */
+export enum NavigationType {
+  Sidenav = 'sidenav',
+  TabGroup = 'tab-group',
+}

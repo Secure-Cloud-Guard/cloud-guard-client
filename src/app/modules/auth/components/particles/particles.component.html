@@ -3,4 +3,6 @@
   <mat-icon>bubble_chart</mat-icon>
 </button>
 
-<div id="particles-container" *ngIf="isParticlesVisible()" class="fixed top-0 w-full h-full -z-10"></div>
+@if (isParticlesVisible()) {
+  <div id="particles-container" class="fixed top-0 w-full h-full -z-10"></div>
+}

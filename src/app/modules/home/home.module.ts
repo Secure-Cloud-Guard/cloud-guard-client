@@ -5,8 +5,9 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { RouterLink, RouterOutlet } from "@angular/router";
-import { DashboardComponent, SidenavComponent, TabGroupComponent } from '@modules/home/components';
+import { DashboardComponent, SidenavComponent, TabGroupComponent, NavSpinnerComponent } from '@modules/home/components';
 import { SharedModule } from "@shared";
 
 
@@ -14,7 +15,8 @@ import { SharedModule } from "@shared";
   declarations: [
     DashboardComponent,
     SidenavComponent,
-    TabGroupComponent
+    TabGroupComponent,
+    NavSpinnerComponent
   ],
   exports: [
     DashboardComponent
@@ -28,7 +30,8 @@ import { SharedModule } from "@shared";
         MatTabsModule,
         SharedModule,
         RouterOutlet,
-        RouterLink
+        RouterLink,
+        MatProgressSpinnerModule
     ]
 })
 export class HomeModule { }

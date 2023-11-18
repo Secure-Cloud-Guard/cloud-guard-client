@@ -8,6 +8,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { HeaderComponent, ThemeSwitchComponent, LogoComponent, GradientBackgroundComponent, AlertComponent } from "@shared/components";
+import {RouterLink} from "@angular/router";
 
 
 @NgModule({
@@ -24,15 +25,16 @@ import { HeaderComponent, ThemeSwitchComponent, LogoComponent, GradientBackgroun
     LogoComponent,
     GradientBackgroundComponent
   ],
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatButtonModule,
-    NgOptimizedImage,
-    MatMenuModule,
-    MatTooltipModule,
-    MatSnackBarModule
-  ]
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatButtonModule,
+        NgOptimizedImage,
+        MatMenuModule,
+        MatTooltipModule,
+        MatSnackBarModule,
+        RouterLink
+    ]
 })
 export class SharedModule { }

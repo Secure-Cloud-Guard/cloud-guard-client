@@ -1,34 +1,61 @@
-<mat-sidenav-container class="!top-14 min-[600px]:!top-16 max-sm:!hidden transition-all">
+<app-nav-spinner class="sm:!hidden"></app-nav-spinner>
+
+<mat-sidenav-container class="max-sm:!hidden transition-all">
   <mat-sidenav mode="side" [opened]="true" [ngClass]="shortSidenav ? 'w-14' : 'w-60'" class="!fixed !top-14 min-[600px]:!top-16 !z-30 !transition-all">
     <div class="relative w-full max-w-full overflow-hidden h-full">
-      <ng-container *ngIf="!shortSidenav; else shortSidenavContent">
+
+      @if (!shortSidenav) {
         <button class="custom-icon-btn square !absolute top-1 right-1 !z-10" mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse Sidenav">
           <mat-icon>keyboard_arrow_left</mat-icon>
         </button>
         <div class="flex flex-col gap-2 mt-7">
-          <ng-container *ngFor="let item of items">
+
+          @for (item of items; track item) {
             <a mat-button
-              [color]="routeService.currentUrl === item.url ? themeColorService.getPrimaryColor() : ''"
-              [routerLink]="item.url"
-              class="flex items-center !justify-start gap-4 ml-4 mr-4">
+               [routerLink]="item.url"
+               [ngClass]="routeService.currentUrl === item.url
+                  ? (themeColorService.getPrimaryColor() === 'primary' ? '!bg-primary-400 !text-primary-400' : '!bg-accent-200 !text-accent-200')
+                  : ''"
+              class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
               <mat-icon>{{ item.icon }}</mat-icon>
               <span>{{ item.label }}</span>
             </a>
-          </ng-container>
+          }
+
+          <a mat-button
+             class="!absolute bottom-4 left-4 right-4 !z-10 flex items-center !justify-start gap-4 !bg-opacity-[7%]"
+             href="https://github.com/Secure-Cloud-Guard" target="_blank">
+            <mat-icon svgIcon="github"></mat-icon>
+            <span>Github Project</span>
+          </a>
         </div>
-      </ng-container>
-      <ng-template #shortSidenavContent>
+      } @else {
         <div class="flex flex-col gap-2 mt-2 items-center">
           <button class="custom-icon-btn square" mat-icon-button (click)="toggleSidenav()" matTooltip="Expand Sidenav">
             <mat-icon>keyboard_arrow_right</mat-icon>
           </button>
-          <ng-container *ngFor="let item of items">
-            <button mat-icon-button [routerLink]="item.url" class="custom-icon-btn square">
+
+          @for (item of items; track item.url) {
+            <button mat-icon-button
+                    matTooltip="{{ item.label }}"
+                    [routerLink]="item.url"
+                    class="custom-icon-btn square !bg-opacity-[7%]"
+                    [ngClass]="routeService.currentUrl === item.url
+                      ? (themeColorService.getPrimaryColor() === 'primary' ? '!bg-primary-400 !text-primary-400' : '!bg-accent-200 !text-accent-200')
+                      : ''">
               <mat-icon>{{ item.icon }}</mat-icon>
             </button>
-          </ng-container>
+          }
+
+          <div class="!absolute bottom-4 !z-10 flex items-center">
+            <button mat-icon-button matTooltip="Github Project" class="custom-icon-btn square !bg-opacity-[7%]">
+              <a class="!z-20 w-full h-full flex items-center justify-center" href="https://github.com/Secure-Cloud-Guard" target="_blank">
+                <mat-icon svgIcon="github"></mat-icon>
+              </a>
+            </button>
+          </div>
         </div>
-      </ng-template>
+      }
     </div>
   </mat-sidenav>
   <mat-sidenav-content [ngClass]="shortSidenav ? '!ml-14' : '!ml-60'" class="min-h-screen py-4 px-5 !transition-all">

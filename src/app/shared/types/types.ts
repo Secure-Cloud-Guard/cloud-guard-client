@@ -37,3 +37,15 @@ export interface AlertData {
   message: string
 }
 
+/**
+ * Interface representing an item in the header dropdown menu.
+ *
+ * @property {string} icon - The icon to be displayed for the dropdown item.
+ * @property {string} label - The label or text associated with the dropdown item.
+ * @property {string} url - The URL or route associated with the dropdown item.
+ */
+export interface HeaderDropdownItem {
+  icon: string,
+  label: string,
+  url: string
+}

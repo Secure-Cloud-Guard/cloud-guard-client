@@ -2,6 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SidenavItem } from "@modules/home/types";
 import { LocalStorageKeys } from "@shared/const";
 import { RouteService, ThemeColorService } from "@shared/services";
+import {MatIconRegistry} from "@angular/material/icon";
+import {DomSanitizer} from "@angular/platform-browser";
+import {Theme} from "@shared/types";
 
 @Component({
   selector: 'app-sidenav',
@@ -14,7 +17,9 @@ export class SidenavComponent implements OnInit {
 
   constructor(
     protected readonly themeColorService: ThemeColorService,
-    protected readonly routeService: RouteService
+    protected readonly routeService: RouteService,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
   ) { }
 
   ngOnInit() {
@@ -22,6 +27,9 @@ export class SidenavComponent implements OnInit {
     if (savedState) {
       this._shortSidenav = JSON.parse(savedState);
     }
+
+    this.matIconRegistry
+      .addSvgIcon('github', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'))
   }
 
   toggleSidenav() {
@@ -32,4 +40,6 @@ export class SidenavComponent implements OnInit {
   get shortSidenav(): boolean {
     return this._shortSidenav;
   }
+
+  protected readonly Theme = Theme;
 }
