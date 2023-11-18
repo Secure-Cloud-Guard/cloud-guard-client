@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { HashLocationStrategy, LocationStrategy } from "@angular/common";
 import { LoginComponent } from '@modules/auth/components';
 import { DashboardComponent } from "@modules/home/components";
 import { PersonalVaultComponent } from "@modules/personal-vault/components";
@@ -27,5 +28,8 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
+  ]
 })
 export class AppRoutingModule {}
