@@ -1,5 +1,5 @@
 <mat-sidenav-container class="!top-14 min-[600px]:!top-16 max-sm:!hidden transition-all">
-  <mat-sidenav mode="side" opened [ngClass]="shortSidenav ? 'w-14' : 'w-60'" class="!fixed !top-14 min-[600px]:!top-16 !z-30 !transition-all">
+  <mat-sidenav mode="side" [opened]="true" [ngClass]="shortSidenav ? 'w-14' : 'w-60'" class="!fixed !top-14 min-[600px]:!top-16 !z-30 !transition-all">
     <div class="relative w-full max-w-full overflow-hidden h-full">
       <ng-container *ngIf="!shortSidenav; else shortSidenavContent">
         <button class="custom-icon-btn square !absolute top-1 right-1 !z-10" mat-icon-button (click)="toggleSidenav()" matTooltip="Collapse Sidenav">
