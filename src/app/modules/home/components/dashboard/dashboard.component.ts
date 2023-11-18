@@ -15,9 +15,9 @@ export class DashboardComponent {
     { icon: 'exit_to_app', label: 'Logout', url: AppRoutes.LOGIN.fullPath },
   ];
   tabGroupItemList: TabGroupItem[] = [
-    { icon: 'lock', url: '/route1' },
-    { icon: 'cloud', url: '/route2' },
-    { icon: 'account_circle', url: '/route3' },
-    { icon: 'settings', url: '/route4' },
+    { icon: 'lock', url: AppRoutes.PERSONAL_VAULT.fullPath },
+    { icon: 'cloud', url: AppRoutes.STORAGE.fullPath },
+    { icon: 'account_circle', url: AppRoutes.PROFILE.fullPath },
+    { icon: 'settings', url: AppRoutes.SETTINGS.fullPath },
   ];
 }

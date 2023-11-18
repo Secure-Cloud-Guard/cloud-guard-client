@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import { ThemeColorService } from "@shared/services";
+import { Component, Input } from '@angular/core';
+import { RouteService, ThemeColorService } from "@shared/services";
 import { TabGroupItem } from "@modules/home/types";
 
 @Component({
@@ -10,6 +10,7 @@ export class TabGroupComponent {
   @Input() items: TabGroupItem[] = [];
 
   constructor(
-    protected readonly themeColorService: ThemeColorService
+    protected readonly themeColorService: ThemeColorService,
+    protected readonly routeService: RouteService
   ) { }
 }

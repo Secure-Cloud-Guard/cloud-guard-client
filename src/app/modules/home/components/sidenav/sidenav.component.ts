@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SidenavItem } from "@modules/home/types";
-import {LocalStorageKeys} from "@shared/const";
+import { LocalStorageKeys } from "@shared/const";
+import { RouteService, ThemeColorService } from "@shared/services";
 
 @Component({
   selector: 'app-sidenav',
@@ -10,6 +11,11 @@ export class SidenavComponent implements OnInit {
   @Input() items: SidenavItem[] = [];
 
   private _shortSidenav: boolean = false;
+
+  constructor(
+    protected readonly themeColorService: ThemeColorService,
+    protected readonly routeService: RouteService
+  ) { }
 
   ngOnInit() {
     const savedState = localStorage.getItem(LocalStorageKeys.SHORT_SIDENAV);
