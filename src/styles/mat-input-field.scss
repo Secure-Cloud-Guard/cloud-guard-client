@@ -1,12 +1,7 @@
 mat-form-field.custom-input {
   $height: 40px !important;
-
-  body.theme-light &.mat-focused .mat-mdc-form-field-focus-overlay {
-    background: rgba(0, 0, 0, 0.3);
-  }
-  body.theme-dark &.mat-focused .mat-mdc-form-field-focus-overlay {
-    background: rgba(255, 255, 255, 0.3);
-  }
+  $bg: var(--mdc-filled-text-field-container-color);
+  $text-color: var(--mdc-filled-text-field-input-text-color);
 
   .mat-mdc-text-field-wrapper {
     border-radius: 8px !important;
@@ -19,7 +14,57 @@ mat-form-field.custom-input {
 
       input {
         @apply text-sm;
+
+        -webkit-text-fill-color: $text-color !important;
+        background-color: transparent !important;
+        -webkit-box-shadow: 0 0 0 20px $bg inset;
+        transition: background-color 5000s ease-in-out 0s;
       }
+    }
+  }
+}
+
+body {
+  $bg-focused-theme-light: rgba(0, 0, 0, 0.3);
+  $bg-focused-theme-dark: rgba(255, 255, 255, 0.3);
+
+  &.theme-light {
+    mat-form-field.custom-input.mat-focused, mat-form-field.custom-input:hover {
+      .mat-mdc-form-field-focus-overlay {
+        background: $bg-focused-theme-light !important;
+      }
+    }
+    mat-form-field.custom-input.mat-focused {
+      .mat-mdc-text-field-wrapper:hover, .mat-mdc-text-field-wrapper {
+        .mat-mdc-form-field-flex .mat-mdc-form-field-infix input {
+          background: transparent !important;
+          -webkit-box-shadow: 0 0 0 20px rgba(0, 0, 0, 0.0015) inset;
+        }
+      }
+    }
+    mat-form-field.custom-input .mat-mdc-text-field-wrapper:hover .mat-mdc-form-field-flex .mat-mdc-form-field-infix input {
+      background: transparent !important;
+      -webkit-box-shadow: 0 0 0 20px rgba(0, 0, 0, 0.0015) inset;
+    }
+  }
+
+  &.theme-dark {
+    mat-form-field.custom-input.mat-focused, mat-form-field.custom-input:hover {
+      .mat-mdc-form-field-focus-overlay {
+        background: $bg-focused-theme-dark !important;
+      }
+    }
+    mat-form-field.custom-input.mat-focused {
+      .mat-mdc-text-field-wrapper:hover, .mat-mdc-text-field-wrapper {
+        .mat-mdc-form-field-flex .mat-mdc-form-field-infix input {
+          background: transparent !important;
+          -webkit-box-shadow: 0 0 0 20px rgba(255, 255, 255, 0.0015) inset;
+        }
+      }
+    }
+    mat-form-field.custom-input .mat-mdc-text-field-wrapper:hover .mat-mdc-form-field-flex .mat-mdc-form-field-infix input {
+      background: transparent !important;
+      -webkit-box-shadow: 0 0 0 20px rgba(255, 255, 255, 0.0015) inset;
     }
   }
 }
