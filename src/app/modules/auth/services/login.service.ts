@@ -10,14 +10,19 @@ import { AlertService } from "@shared/services";
   providedIn: 'root'
 })
 export class LoginService {
-  private _isLoggedIn: boolean = false;
-  private _userName: string = "";
+  private sessionTimeout: number = 60 * 60 * 1000;  // 1 hour in milliseconds
 
   constructor(
     private router: Router,
     private alertService: AlertService
-  ) {
-    this._isLoggedIn = localStorage.getItem(LocalStorageKeys.IS_LOGGED_IN) === 'true';
+  ) { }
+
+  private updateLoginStatus(isLoggedIn: boolean): void {
+    if (isLoggedIn) {
+      localStorage.setItem(LocalStorageKeys.LAST_LOGIN_TIME, new Date().getTime().toString());
+    } else {
+      localStorage.removeItem(LocalStorageKeys.LAST_LOGIN_TIME);
+    }
   }
 
   /**
@@ -27,26 +32,25 @@ export class LoginService {
    * @returns True if the login is successful, false otherwise.
    */
   login(username: string, password: string): boolean {
-    this._isLoggedIn = username === 'admin' && password === 'admin';
+    const isLoggedIn = username === 'admin' && password === 'admin';
 
-    if (!this._isLoggedIn) {
+    if (!isLoggedIn) {
       this.alertService.error('Incorrect username or password');
       return false;
     }
 
-    this._userName = username;
-    localStorage.setItem(LocalStorageKeys.IS_LOGGED_IN, 'true');
+    this.updateLoginStatus(true);
 
     this.router.navigate([AppRoutes.DASHBOARD.relativePath]).then(() => {
       this.alertService.success('You have successfully logged in!')
     });
 
-    return this._isLoggedIn;
+    return true;
   }
 
   logout(): void {
-    this._isLoggedIn = false;
-    localStorage.removeItem(LocalStorageKeys.IS_LOGGED_IN);
+    this.updateLoginStatus(false);
+
     this.router.navigate([AppRoutes.LOGIN.relativePath]).then(() => {
       this.alertService.info('You have been successfully logged out.')
     });
@@ -57,10 +61,13 @@ export class LoginService {
    * @returns True if the user is logged in, false otherwise.
    */
   get isLoggedIn(): boolean {
-    return this._isLoggedIn;
-  }
+    const lastLoginTime = localStorage.getItem(LocalStorageKeys.LAST_LOGIN_TIME);
 
-  get userName(): string {
-    return this._userName;
+    if (lastLoginTime) {
+      const currentTime = new Date().getTime();
+      return currentTime - parseInt(lastLoginTime, 10) < this.sessionTimeout;
+    }
+
+    return false;
   }
 }
