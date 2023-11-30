@@ -1,0 +1,111 @@
+
+.theme-light {
+  --btn-bg-color: #847bd9;
+  --btn-text-color: white;
+  --btn-link-bg-color: rgba(132, 123, 217, 0.15);
+  --btn-link-text-color: #261da7;
+  --text-color: rgba(0, 0, 0, 0.87);
+  --amplify-components-input-border-color: rgba(0, 0, 0, 0.3);
+  --amplify-components-input-focus-border-color: #261da7;
+  --amplify-components-fieldcontrol-focus-box-shadow: unset;
+  --amplify-components-tabs-item-active-color: #261da7;
+  --amplify-components-tabs-item-hover-color: #483cc2;
+  --amplify-components-tabs-item-active-border-color: #261da7;
+  --amplify-components-tabs-item-color: rgba(0, 0, 0, 0.6);
+  --amplify-components-tabs-item-border-color: rgba(0, 0, 0, 0.1);
+  --amplify-components-tabs-border-color: rgba(0, 0, 0, 0.1);
+  --amplify-components-heading-color: rgba(0, 0, 0, 0.87);
+
+  .amplify-button--default {
+    --amplify-components-text-color: rgba(0, 0, 0, 0.87);
+    --amplify-components-button-hover-border-color: #847bd9;
+  }
+}
+.theme-dark {
+  --btn-bg-color: #a2fabf;
+  --btn-text-color: rgba(0, 0, 0, 0.87);
+  --btn-link-bg-color: rgba(162, 250, 191, 0.06);
+  --btn-link-text-color: #a2fabf;
+  --text-color: white;
+  --amplify-components-field-label-color: white;
+  --amplify-components-fieldcontrol-color: rgba(255, 255, 255, 0.87);
+  --amplify-components-fieldcontrol-focus-box-shadow: unset;
+  --amplify-components-input-border-color: rgba(255, 255, 255, 0.4);
+  --amplify-components-input-focus-border-color: rgba(162, 250, 191, 0.95);
+  --amplify-components-tabs-item-active-color: #79f7a6;
+  --amplify-components-tabs-item-hover-color: #d5ffe4;
+  --amplify-components-tabs-item-active-border-color: #79f7a6;
+  --amplify-components-tabs-item-color: rgba(255, 255, 255, 0.75);
+  --amplify-components-tabs-item-border-color: rgba(255, 255, 255, 0.1);
+  --amplify-components-tabs-border-color: rgba(255, 255, 255, 0.1);
+  --amplify-components-heading-color: white;
+
+  .amplify-button--default {
+    --amplify-components-text-color: rgba(255, 255, 255, 0.85);
+    --amplify-components-button-hover-border-color: rgba(121, 247, 166, 0.8);
+  }
+}
+
+button.amplify-button.amplify-button--primary {
+  background-color: var(--btn-bg-color) !important;
+  color: var(--btn-text-color) !important;
+  font-weight: 500 !important;
+
+  &[type="submit"] {
+    margin-top: 15px !important;
+  }
+}
+
+button.amplify-button.amplify-button--default {
+  &:hover {
+    background: var(--btn-link-bg-color) !important;;
+  }
+}
+
+button.amplify-button.amplify-button--link {
+  &:hover {
+    background-color: var(--btn-link-bg-color) !important;
+  }
+  color: var(--btn-link-text-color) !important;
+}
+
+[data-amplify-router] {
+  border: none !important;
+  background: var(--mdc-elevated-card-container-color) !important;
+  --amplify-components-divider-label-font-size: 0px;
+}
+
+[data-amplify-form] {
+  padding: 20px 45px 15px 45px !important;
+}
+
+amplify-forgot-password [data-amplify-form] {
+  padding: 30px 45px 26px 45px !important;
+}
+
+[data-amplify-footer] {
+  padding-bottom: 5px !important;
+}
+
+.custom-amplify-authenticator {
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 15px 25px, rgba(0, 0, 0, 0.05) 0 5px 10px;
+}
+
+.amplify-divider {
+  display: none !important;
+}
+
+@media (max-width: 400px) {
+  .login-wrap{
+    width: 99% !important;
+  }
+  [data-amplify-container] {
+    width: 100% !important;
+  }
+  [data-amplify-form] {
+    padding: 20px 25px 15px 25px !important;
+  }
+}

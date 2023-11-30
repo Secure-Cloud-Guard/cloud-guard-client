@@ -1,28 +1,57 @@
 <div class="w-screen h-screen">
+
   <app-theme-switch class="absolute top-2 right-2"></app-theme-switch>
   <app-particles></app-particles>
   <app-gradient-background></app-gradient-background>
 
-  <div class="w-11/12 sm:w-[400px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-    <div class="flex justify-center mb-8 mr-5">
-      <app-logo></app-logo>
+  <div class="login-wrap w-max absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <div class="flex justify-center mb-10 mr-5">
+      <app-logo class="sm:scale-125"></app-logo>
     </div>
-    <mat-card class="!shadow-xl !rounded-2xl px-10 py-9">
-      <form autocomplete="off" class="flex flex-col">
-        <label for="email" class="custom-label">Email</label>
-        <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">
-          <input autocomplete="off" id="email" matInput [(ngModel)]="username" placeholder="Username" name="username" required>
-        </mat-form-field>
-        <label for="password" class="custom-label">Password</label>
-        <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">
-          <input autocomplete="off" id="password" matInput (keydown.enter)="onLogin()" [(ngModel)]="password" [type]="hide ? 'password' : 'text'" type="password" placeholder="Password" name="password" required>
-          <button class="medium" mat-icon-button matSuffix (click)="passwordToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-            <mat-icon class="scale-75">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-        </mat-form-field>
-      </form>
-      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="onLogin()">Login</button>
-    </mat-card>
+    <div class="custom-amplify-authenticator">
+      <amplify-authenticator
+        [loginMechanisms]="emailMechanism"
+        [socialProviders]="['google']"
+      >
+        <ng-template amplifySlot="sign-in-header">
+          <h3 class="font-medium text-2xl text-center py-3">
+            Sign in to Cloud Guard
+          </h3>
+        </ng-template>
+        <ng-template amplifySlot="sign-up-header">
+          <h3 class="font-medium text-2xl text-center py-3">
+            Create a new account
+          </h3>
+        </ng-template>
+        <ng-template
+          amplifySlot="authenticated"
+          let-user="user"
+          let-signOut="signOut"
+        >
+          <h2>Welcome, {{ user.username }}!</h2>
+          <button (click)="signOut()">Sign Out</button>
+        </ng-template>
+      </amplify-authenticator>
+    </div>
   </div>
+
+<!--  <div class="w-11/12 sm:w-[400px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">-->
+<!--    <mat-card class="!shadow-xl !rounded-2xl px-10 py-9">-->
+<!--      <form autocomplete="off" class="flex flex-col">-->
+<!--        <label for="email" class="custom-label">Email</label>-->
+<!--        <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">-->
+<!--          <input autocomplete="off" id="email" matInput [(ngModel)]="username" placeholder="Username" name="username" required>-->
+<!--        </mat-form-field>-->
+<!--        <label for="password" class="custom-label">Password</label>-->
+<!--        <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">-->
+<!--          <input autocomplete="off" id="password" matInput (keydown.enter)="onLogin()" [(ngModel)]="password" [type]="hide ? 'password' : 'text'" type="password" placeholder="Password" name="password" required>-->
+<!--          <button class="medium" mat-icon-button matSuffix (click)="passwordToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">-->
+<!--            <mat-icon class="scale-75">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>-->
+<!--          </button>-->
+<!--        </mat-form-field>-->
+<!--      </form>-->
+<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="onLogin()">Login</button>-->
+<!--    </mat-card>-->
+<!--  </div>-->
 </div>
 

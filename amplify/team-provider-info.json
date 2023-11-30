@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-cloudguardclient-dev-204614-authRole",
+      "UnauthRoleArn": "arn:aws:iam::204963265685:role/amplify-cloudguardclient-dev-204614-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::204963265685:role/amplify-cloudguardclient-dev-204614-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-cloudguardclient-dev-204614-deployment",
+      "UnauthRoleName": "amplify-cloudguardclient-dev-204614-unauthRole",
+      "StackName": "amplify-cloudguardclient-dev-204614",
+      "StackId": "arn:aws:cloudformation:eu-north-1:204963265685:stack/amplify-cloudguardclient-dev-204614/f55c0300-8eef-11ee-8863-0e7e3cba53f0",
+      "AmplifyAppId": "dzzfgkp1j87ww"
+    },
+    "categories": {
+      "auth": {
+        "cloudguardclient49e46baf": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
+  }
+}

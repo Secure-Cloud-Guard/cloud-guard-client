@@ -8,6 +8,8 @@ import { ThemeColorService } from "@shared/services";
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
+  emailMechanism = ['email'] as any
+
   username: string = "";
   password: string = "";
   hide: boolean = true;

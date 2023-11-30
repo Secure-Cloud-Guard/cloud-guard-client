@@ -10,6 +10,12 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { LoginComponent, ParticlesComponent } from '@modules/auth/components';
 import { SharedModule } from "@shared";
+import { AmplifyAuthenticatorModule } from "@aws-amplify/ui-angular";
+import { Amplify } from 'aws-amplify';
+import awsconfig from '@app/../aws-exports';
+
+
+Amplify.configure(awsconfig);
 
 
 @NgModule({
@@ -32,6 +38,7 @@ import { SharedModule } from "@shared";
     NgOptimizedImage,
     SharedModule,
     MatTooltipModule,
+    AmplifyAuthenticatorModule,
   ]
 })
 export class AuthModule { }
