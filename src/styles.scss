@@ -154,9 +154,13 @@ $cloud-theme-dark: map-merge($cloud-theme-dark, ( color: $cloud-theme-dark-color
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Inter', sans-serif; }
 
+
+// This is the correct way to avoiding the duplicated theming styles.
+// More https://github.com/angular/components/blob/main/guides/duplicate-theming-styles.md
+// Light Theme
+@include mat.all-component-themes($cloud-theme);
+
+// Dark Theme
 .theme-dark {
-  @include mat.all-component-themes($cloud-theme-dark);
-}
-.theme-light {
-  @include mat.all-component-themes($cloud-theme);
+  @include mat.all-component-colors($cloud-theme-dark);
 }

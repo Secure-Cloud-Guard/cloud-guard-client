@@ -1,0 +1,21 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "../../out-tsc/app",
+    "types": [],
+    "paths": {
+      "@app/*": ["./app/*"],
+      "@modules/*": ["./app/modules/*"],
+      "@modules": ["./app/modules"],
+      "@globalShared": ["./app/global-shared.ts"]
+    }
+  },
+  "files": [
+    "src/main.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}

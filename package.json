@@ -3,9 +3,15 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
+
+    "config-auth": "ts-node ./projects/auth/src/assets/scripts/setEnv.ts",
+    "start-auth": "npm run config-auth -- --environment=dev && ng serve auth",
+    "build-auth": "npm run config-auth -- --environment=prod && ng build --project=\"auth\" --configuration production",
+
+    "config-client": "ts-node ./projects/client/src/assets/scripts/setEnv.ts",
+    "start-client": "npm run config-client -- --environment=dev && ng serve client",
+    "build-client": "npm run config-client -- --environment=prod && ng build --project=\"client\" --configuration production",
+
     "test": "ng test"
   },
   "private": true,
@@ -20,6 +26,7 @@
     "@angular/platform-browser": "^17.0.3",
     "@angular/platform-browser-dynamic": "^17.0.3",
     "@angular/router": "^17.0.3",
+    "aws-amplify": "^6.0.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
@@ -30,6 +37,7 @@
     "@angular/compiler-cli": "^17.0.3",
     "@types/jasmine": "~4.3.0",
     "autoprefixer": "^10.4.16",
+    "dotenv": "^16.3.1",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -39,6 +47,8 @@
     "madge": "^6.1.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
-    "typescript": "~5.2.2"
+    "ts-node": "^10.9.1",
+    "typescript": "~5.2.2",
+    "yargs": "^17.7.2"
   }
 }

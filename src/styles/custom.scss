@@ -1,10 +1,10 @@
-@import "styles/scrollbar";
-@import "styles/mat-input-field";
-@import "styles/mat-button";
-@import "styles/mat-tab-group";
-@import "styles/mat-snack-bar";
-@import "styles/mat-icon";
+@import "./scrollbar";
+@import "./mat-input-field";
+@import "./mat-button";
+@import "./mat-tab-group";
+@import "./mat-snack-bar";
+@import "./mat-icon";
 
 .custom-label {
-  @apply mb-2 text-base;
+  @apply mb-2 text-sm cursor-pointer;
 }

@@ -1,0 +1,66 @@
+<div class="w-screen h-screen">
+  <app-theme-switch class="absolute top-2 right-2"></app-theme-switch>
+  <app-particles></app-particles>
+  <app-gradient-background></app-gradient-background>
+
+  <div class="w-[97%] sm:w-[460px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <div class="flex justify-center mb-9 mr-5">
+      <app-logo class="sm:scale-125"></app-logo>
+    </div>
+    <mat-card class="!shadow-xl !rounded-2xl px-6 pt-10 pb-9 sm:px-14">
+      <h1 class="flex gap-2 font-medium text-3xl mb-8">
+        <span [class]="themeService.theme === Theme.Light ? 'text-primary-500' : 'text-accent-200'">Sign in</span>
+        <span class="hidden sm:block">to your account</span>
+        <span class="block sm:hidden">to App</span>
+      </h1>
+
+      <button mat-stroked-button class="w-full" [color]="themeColorService.getPrimaryColor()">
+        <mat-icon svgIcon="google"></mat-icon>
+        <span [class]="themeService.theme === Theme.Light ? 'text-zinc-900' : 'text-white'">
+          Sign in with Google
+        </span>
+      </button>
+
+      <div class="my-5">
+        <mat-divider></mat-divider>
+      </div>
+
+      <form autocomplete="off" class="flex flex-col">
+        <label for="email" class="custom-label">Email</label>
+        <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">
+          <input autocomplete="off" id="email" matInput [(ngModel)]="email" placeholder="Email" name="email" required>
+        </mat-form-field>
+        <label for="password" class="custom-label">Password</label>
+        <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">
+          <input autocomplete="off" id="password" matInput (keydown.enter)="onLogin($event)" [(ngModel)]="password" [type]="hide ? 'password' : 'text'" type="password" placeholder="Password" name="password" required>
+          <button class="medium" mat-icon-button matSuffix (click)="passwordToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <mat-icon class="scale-75">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+      </form>
+      <button class="w-full mt-2" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="onLogin($event)">Login</button>
+
+      <div class="inline text-sm mt-5">
+        <span>Don't have an account? </span>
+        <span class="font-medium cursor-pointer underline" [class]="themeService.theme === Theme.Light ? 'text-primary-500' : 'text-accent-200'">
+          Register
+        </span>
+      </div>
+
+<!--      <br>-->
+<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.handleSignUp({email: 'dmytro27kagirov@gmail.com', password: 'Qwer!1234'})">Cognito Sing Up</button>-->
+<!--      <br>-->
+<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.handleSignUpConfirmation({username: 'dmytro27kagirov@gmail.com', confirmationCode: '488555'})">Cognito Confirm Sing Up</button>-->
+<!--      <br>-->
+<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.handleSignIn({username: 'dmytro27kagirov@gmail.com', password: 'Qwer!1234'})">Cognito Login</button>-->
+<!--      <br>-->
+<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.currentAuthenticatedUser()">Cognito Current User</button>-->
+<!--      <br>-->
+<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.fetchAuthSession()">Cognito Session</button>-->
+    </mat-card>
+  </div>
+
+  <br>
+  <button mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.signOut()">Cognito Sing Out</button>
+</div>
+

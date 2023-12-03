@@ -1,8 +1,8 @@
-FROM node:18.10.0-alpine3.15 as frontend-builder
+FROM node:18.13.0-alpine3.15 as frontend-builder
 
 WORKDIR /app
 
-RUN npm install -g @angular/cli@16.2.0
+RUN npm install -g @angular/cli@17.0.1
 
 COPY package.json /app
 RUN npm install
