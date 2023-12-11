@@ -4,13 +4,13 @@
   "scripts": {
     "ng": "ng",
 
-    "config-auth": "ts-node ./projects/auth/src/assets/scripts/setEnv.ts",
-    "start-auth": "npm run config-auth -- --environment=dev && ng serve auth",
-    "build-auth": "npm run config-auth -- --environment=prod && ng build --project=\"auth\" --configuration production",
+    "config-env": "ts-node ./src/assets/scripts/setEnv.ts",
 
-    "config-client": "ts-node ./projects/client/src/assets/scripts/setEnv.ts",
-    "start-client": "npm run config-client -- --environment=dev && ng serve client",
-    "build-client": "npm run config-client -- --environment=prod && ng build --project=\"client\" --configuration production",
+    "start-auth": "npm run config-env -- --environment=dev && ng serve auth",
+    "build-auth": "npm run config-env -- --environment=prod && ng build --project=\"auth\" --configuration production",
+
+    "start-client": "npm run config-env -- --environment=dev && ng serve client",
+    "build-client": "npm run config-env -- --environment=prod && ng build --project=\"client\" --configuration production",
 
     "test": "ng test"
   },

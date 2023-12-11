@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Amplify, type ResourcesConfig } from "aws-amplify";
 import { signIn, signUp, signOut, confirmSignUp, getCurrentUser, fetchAuthSession, type ConfirmSignUpInput, type SignInInput } from 'aws-amplify/auth';
-import { environment } from '@app/../environments/environment';
+import { environment } from '@app/../../../../src/environments/environment';
 import { SignUpParameters } from "@modules/auth/types";
 import { AppRoutes, AlertService } from "@globalShared";
 import { Router } from "@angular/router";
