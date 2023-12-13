@@ -20,6 +20,19 @@ jobs:
       - name: Build Client
         run: npm run build-client
 
+      - name: Deploy Auth
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: dist/auth/browser
+          bucket: ${{ secrets.S3_BUCKET_AUTH }}
+          bucket-region: ${{ secrets.S3_BUCKET_REGION_AUTH }}
+          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_AUTH }}
+          invalidation: /
+          delete-removed: true
+          no-cache: true
+          private: true
+          files-to-include: '{.*/**,**}'
+
       - name: Deploy Client
         uses: reggionick/s3-deploy@v4
         with:
