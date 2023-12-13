@@ -1,16 +1,28 @@
 
 mat-icon {
   $small-size: 18px;
+  $large-size: 30px;
 
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
 
-  &.small {
-    font-size: $small-size;
+  @mixin icon-size($icon-size) {
+    font-size: $icon-size;
+    height: $icon-size;
+    width: $icon-size;
+
     svg {
-      height: $small-size;
-      width: $small-size;
+      height: $icon-size;
+      width: $icon-size;
     }
+  }
+
+  &.small {
+    @include icon-size($small-size);
+  }
+
+  &.large {
+    @include icon-size($large-size);
   }
 }

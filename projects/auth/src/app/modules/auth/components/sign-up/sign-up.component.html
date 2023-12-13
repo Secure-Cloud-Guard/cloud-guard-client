@@ -1,0 +1,59 @@
+<div class="w-[97%] sm:w-[440px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+  <div class="flex justify-center mb-9 mr-5">
+    <app-logo class="sm:scale-125"></app-logo>
+  </div>
+  <mat-card class="!shadow-xl !rounded-2xl px-6 pt-11 pb-7 sm:px-14">
+    <h1 class="flex justify-center gap-2 font-medium text-3xl mb-3">
+      <span class="text-accent-color">Create</span>
+      <span class="hidden sm:block">your account</span>
+      <span class="block sm:hidden">account</span>
+    </h1>
+
+    <mat-stepper [color]="themeColorService.getPrimaryColor()" class="custom-stepper" linear="true" #stepper>
+
+      <mat-step label="Sign Up" [completed]="steps.signUp">
+        <form autocomplete="off" class="flex flex-col">
+          <label for="email" class="custom-label">Email</label>
+          <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">
+            <input autocomplete="off" id="email" matInput [(ngModel)]="email" (keydown.enter)="onSignUp($event)" placeholder="Email" name="email" required>
+          </mat-form-field>
+          <label for="password" class="custom-label">Password</label>
+          <mat-form-field [color]="themeColorService.getPrimaryColor()" class="custom-input">
+            <input autocomplete="off" id="password" matInput [(ngModel)]="password" (keydown.enter)="onSignUp($event)" [type]="hide ? 'password' : 'text'" type="password" placeholder="Password" name="password" required>
+            <button class="medium" mat-icon-button matSuffix (click)="passwordToggle()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+              <mat-icon class="scale-75">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
+          <button type="submit" class="w-full mt-2" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="onSignUp($event)">Sign Up</button>
+        </form>
+        <div class="text-sm mt-5">
+          <span>Already a user? </span>
+          <a [routerLink]="AppRoutes.AUTH.LOGIN.fullPath" class="font-medium cursor-pointer underline text-accent-color">
+            Login
+          </a>
+        </div>
+      </mat-step>
+
+      <mat-step label="Fill code" [completed]="steps.fillCode">
+        <div class="mt-5 mb-7 px-2">
+          <code-input
+            class="text-primary-color"
+            [initialFocusField]="0"
+            [codeLength]="6"
+            (codeCompleted)="onCodeCompleted($event)">
+          </code-input>
+        </div>
+        <span (click)="resendCode()" class="mb-2 block text-sm font-medium text-end cursor-pointer underline text-accent-color">
+          Send code again
+        </span>
+      </mat-step>
+
+      <mat-step label="Login" [completed]="steps.login">
+        <span class="font-medium text-center block my-6">
+          You have successfully signed up
+        </span>
+      </mat-step>
+    </mat-stepper>
+
+  </mat-card>
+</div>

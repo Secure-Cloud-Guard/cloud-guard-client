@@ -13,8 +13,7 @@ mat-form-field.custom-input {
       padding: 0 !important;
 
       input {
-        @apply text-sm;
-
+        font-size: 0.95em !important;
         -webkit-text-fill-color: $text-color !important;
         background-color: transparent !important;
         -webkit-box-shadow: 0 0 0 20px $bg inset;

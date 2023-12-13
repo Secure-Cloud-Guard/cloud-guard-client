@@ -41,7 +41,10 @@ button[mat-icon-button]{
   $medium-button: 40px !important;
   $medium-icon: 25px !important;
 
-  &.very-small, &.small, &.medium {
+  $social-button: 44px !important;
+  $social-icon: 28px !important;
+
+  &.very-small, &.small, &.medium, &.social {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
@@ -60,6 +63,8 @@ button[mat-icon-button]{
 
     mat-icon {
       font-size: $icon-size;
+      height: $icon-size;
+      width: $icon-size;
 
       svg {
         height: $icon-size;
@@ -83,5 +88,59 @@ button[mat-icon-button]{
 
   &.medium {
     @include button-size($medium-button, $medium-button, $medium-icon);
+  }
+
+  &.social {
+    @include button-size($social-button, $social-button, $social-icon);
+  }
+}
+
+@mixin social-button-colors($bg-color, $icon-color) {
+  span.mat-mdc-button-persistent-ripple {
+    background: $bg-color;
+  }
+  mat-icon {
+    z-index: 10;
+    color: $icon-color;
+    filter: brightness(1.1) contrast(1.05);
+  }
+}
+
+$disabled-bg-color: rgba(93, 93, 93, 0.1);
+$disabled-icon-color: #5D5D5D;
+$google-bg-color: rgba(219, 68, 55, 0.1);
+$google-icon-color: #d55045;
+$facebook-bg-color: rgba(66, 103, 178, 0.1);
+$facebook-icon-color: #4267B2;
+$github-bg-color: rgba(36, 41, 46, 0.08);
+$github-icon-color: #24292e;
+
+button[mat-icon-button]{
+  &.disabled {
+    @include social-button-colors($disabled-bg-color, $disabled-icon-color);
+  }
+  &.google {
+    @include social-button-colors($google-bg-color, $google-icon-color);
+  }
+  &.facebook {
+    @include social-button-colors($facebook-bg-color, $facebook-icon-color);
+  }
+  &.github {
+    @include social-button-colors($github-bg-color, $github-icon-color);
+  }
+}
+
+.theme-dark button[mat-icon-button] {
+  &.disabled {
+    @include social-button-colors($disabled-icon-color, white);
+  }
+  &.google {
+    @include social-button-colors($google-icon-color, white);
+  }
+  &.facebook {
+    @include social-button-colors($facebook-icon-color, white);
+  }
+  &.github {
+    @include social-button-colors(white, $github-icon-color);
   }
 }

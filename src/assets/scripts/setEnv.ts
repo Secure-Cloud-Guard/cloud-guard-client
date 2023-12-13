@@ -29,9 +29,8 @@ writeFileUsingFS('./src/environments/environment.ts', '');
 
 const isProduction = environment === 'prod';
 
-const targetPath = isProduction
-  ? './src/environments/environment.prod.ts'
-  : './src/environments/environment.ts';
+const envPath = './src/environments/environment.ts';
+const prodPath = './src/environments/environment.prod.ts';
 
 const environmentFileContent = `
   export const environment = {
@@ -43,6 +42,22 @@ const environmentFileContent = `
   };
 `;
 
-writeFileUsingFS(targetPath, environmentFileContent);
+const emptyEnvironmentFile = `
+  export const environment = {
+    production: false,
+    cognito: {
+      userPoolId: '',
+      userPoolWebClientId: '',
+    },
+  };
+`;
+
+if (isProduction) {
+  writeFileUsingFS(prodPath, environmentFileContent);
+  writeFileUsingFS(envPath, emptyEnvironmentFile);
+} else {
+  writeFileUsingFS(prodPath, emptyEnvironmentFile);
+  writeFileUsingFS(envPath, environmentFileContent);
+}
 
 /* tslint:enable */

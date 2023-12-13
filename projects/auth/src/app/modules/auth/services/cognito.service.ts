@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { NGXLogger } from "ngx-logger";
 import { Amplify, type ResourcesConfig } from "aws-amplify";
-import { signIn, signUp, signOut, confirmSignUp, getCurrentUser, fetchAuthSession, type ConfirmSignUpInput, type SignInInput } from 'aws-amplify/auth';
+import { signIn, signUp, signOut, confirmSignUp, resendSignUpCode, getCurrentUser, fetchAuthSession, type ConfirmSignUpInput, type SignInInput, type SignUpInput, type ResendSignUpCodeInput } from 'aws-amplify/auth';
 import { environment } from '@app/../../../../src/environments/environment';
-import { SignUpParameters } from "@modules/auth/types";
 import { AppRoutes, AlertService } from "@globalShared";
 import { Router } from "@angular/router";
+import { COGNITO_SERVICE_ERROR } from "@modules/auth/const";
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class CognitoService {
   constructor(
     private alertService: AlertService,
     private router: Router,
+    private logger: NGXLogger,
   ) {
     const authConfig: ResourcesConfig['Auth'] = {
       Cognito: {
@@ -25,43 +27,58 @@ export class CognitoService {
     Amplify.configure({ Auth: authConfig });
   }
 
-  public async handleSignUp({ email, password }: SignUpParameters) {
+  public async signUp({ username, password }: SignUpInput) {
     try {
-      console.log('email: ', email);
-      console.log('password: ', password);
-
       const { isSignUpComplete, userId, nextStep } = await signUp({
-        username: email,
+        username,
         password,
         options: {
-          userAttributes: { email },
+          userAttributes: { email: username },
           autoSignIn: true
         }
       });
 
-      console.log('handleSignUp ___________');
-      console.log('isSignUpComplete: ', isSignUpComplete);
-      console.log('userId: ', userId);
-      console.log('nextStep: ', nextStep);
+      this.logger.log('isSignUpComplete: ', isSignUpComplete);
+      this.logger.log('nextStep: ', nextStep);
+
+      return { isSignUpComplete, userId, nextStep } ;
 
     } catch (error) {
-      console.log('error signing up:', error);
+      this.alertService.error(error as string);
+      this.logger.error('error signing up:', error);
+
+      return Promise.reject(COGNITO_SERVICE_ERROR);
     }
   }
 
-  public async handleSignUpConfirmation({ username, confirmationCode }: ConfirmSignUpInput) {
+  public async resendSignUpCode({ username }: ResendSignUpCodeInput) {
+    try {
+      const { destination, attributeName} = await resendSignUpCode({ username: username })
+      return { destination, attributeName };
+
+    } catch (error) {
+      this.alertService.error(error as string);
+      this.logger.error('error resendSignUpCode', error);
+
+      return Promise.reject(COGNITO_SERVICE_ERROR);
+    }
+  }
+
+  public async signUpConfirmation({ username, confirmationCode }: ConfirmSignUpInput) {
     try {
       const { isSignUpComplete, nextStep } = await confirmSignUp({
         username,
         confirmationCode
       });
 
-      console.log('handleSignUpConfirmation ___________');
-      console.log('isSignUpComplete: ', isSignUpComplete);
-      console.log('nextStep: ', nextStep);
+      this.logger.log('isSignUpComplete: ', isSignUpComplete);
+      this.logger.log('nextStep: ', nextStep);
 
     } catch (error) {
-      console.log('error confirming sign up', error);
+      this.alertService.error(error as string);
+      this.logger.error('error confirming sign up', error);
+
+      return Promise.reject(COGNITO_SERVICE_ERROR);
     }
   }
 
@@ -69,9 +86,8 @@ export class CognitoService {
     try {
       const { isSignedIn, nextStep } = await signIn({ username, password });
 
-      console.log('handleSignIn ___________');
-      console.log('isSignedIn: ', isSignedIn);
-      console.log('nextStep: ', nextStep);
+      this.logger.log('isSignedIn: ', isSignedIn);
+      this.logger.log('nextStep: ', nextStep);
 
       if (isSignedIn) {
         this.router.navigate([AppRoutes.MAIN.DASHBOARD.relativePath]).then(() => {
@@ -81,8 +97,7 @@ export class CognitoService {
 
     } catch (error) {
       this.alertService.error('Incorrect username or password');
-
-      console.log('error signing in', error);
+      this.logger.error('error signing in', error);
     }
   }
 
@@ -93,11 +108,10 @@ export class CognitoService {
       this.router.navigate([AppRoutes.AUTH.LOGIN.relativePath]).then(() => {
         this.alertService.info('You have been successfully logged out.')
       });
-
-      console.log('handleSignOut ___________');
+      this.logger.log('The user sign out');
 
     } catch (error) {
-      console.log('error signing out: ', error);
+      this.logger.error('error signing out: ', error);
     }
   }
 
@@ -105,21 +119,21 @@ export class CognitoService {
     try {
       const user = await getCurrentUser();
 
-      console.log('user: ', user);
+      this.logger.log('user: ', user);
 
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
     }
   }
 
   public async fetchAuthSession() {
     try {
-      const session = fetchAuthSession();
+      const session = await fetchAuthSession();
 
-      console.log('session: ', session);
+      this.logger.log('session: ', session);
 
     } catch (err) {
-      console.log(err);
+      this.logger.error(err);
     }
   }
 

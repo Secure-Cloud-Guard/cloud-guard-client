@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-
     "config-env": "ts-node ./src/assets/scripts/setEnv.ts",
 
     "start-auth": "npm run config-env -- --environment=dev && ng serve auth",
+    "start-auth-prod": "npm run config-env -- --environment=prod && ng serve auth --configuration production",
     "build-auth": "npm run config-env -- --environment=prod && ng build --project=\"auth\" --configuration production",
 
     "start-client": "npm run config-env -- --environment=dev && ng serve client",
+    "start-client-prod": "npm run config-env -- --environment=prod && ng serve client --configuration production",
     "build-client": "npm run config-env -- --environment=prod && ng build --project=\"client\" --configuration production",
 
     "test": "ng test"
@@ -26,7 +27,9 @@
     "@angular/platform-browser": "^17.0.3",
     "@angular/platform-browser-dynamic": "^17.0.3",
     "@angular/router": "^17.0.3",
+    "angular-code-input": "^2.0.0",
     "aws-amplify": "^6.0.5",
+    "ngx-logger": "^5.0.12",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

@@ -4,7 +4,49 @@
 @import "./mat-tab-group";
 @import "./mat-snack-bar";
 @import "./mat-icon";
+@import "./mat-stepper";
+
+.theme-light code-input {
+  --item-border: 1px solid #9a9a9a;
+  --item-border-bottom: 1px solid #9a9a9a;
+}
+.theme-dark code-input {
+  --item-border: 1px solid #dddddd;
+  --item-border-bottom: 1px solid #dddddd;
+}
 
 .custom-label {
   @apply mb-2 text-sm cursor-pointer;
+}
+
+.card-bg {
+  background: var(--mdc-elevated-card-container-color) !important;
+}
+
+.border-color {
+  border-color: var(--mat-divider-color) !important;
+}
+
+.theme-dark {
+  .text-primary-color {
+    @apply text-white;
+  }
+  .text-accent-color {
+    @apply text-accent-200;
+  }
+  .text-secondary-color {
+    @apply text-zinc-300;
+  }
+}
+
+.theme-light {
+  .text-primary-color {
+    @apply text-black;
+  }
+  .text-accent-color {
+    @apply text-primary-500;
+  }
+  .text-secondary-color {
+    @apply text-zinc-500;
+  }
 }

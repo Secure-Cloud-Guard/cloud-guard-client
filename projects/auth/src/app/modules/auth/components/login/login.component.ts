@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { MatIconRegistry } from "@angular/material/icon";
-import { DomSanitizer } from "@angular/platform-browser";
 import { CognitoService } from "@modules/auth/services";
-import { ThemeColorService, ThemeService, Theme } from "@globalShared";
+import { AppRoutes, ThemeColorService } from "@globalShared";
 
 @Component({
   selector: 'app-login',
@@ -12,18 +10,13 @@ export class LoginComponent {
   email: string = "";
   password: string = "";
   hide: boolean = true;
-  protected readonly Theme = Theme;
+
+  protected readonly AppRoutes = AppRoutes;
 
   constructor(
     protected readonly cognitoService: CognitoService,
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-    protected readonly themeColorService: ThemeColorService,
-    protected readonly themeService: ThemeService
-  ) {
-    this.matIconRegistry
-      .addSvgIcon('google', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/google.svg'));
-  }
+    protected readonly themeColorService: ThemeColorService
+  ) { }
 
   onLogin(event: Event|MouseEvent) {
     event.preventDefault();

@@ -17,6 +17,10 @@ export const AppRoutes = {
       relativePath: 'login',
       fullPath: '/login'
     },
+    SIGN_UP: {
+      relativePath: 'signup',
+      fullPath: '/signup'
+    },
   },
   MAIN: {
     DASHBOARD: {
