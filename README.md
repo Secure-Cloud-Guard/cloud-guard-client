@@ -6,4 +6,4 @@ The Cloud Guard project addresses the critical issue of data security in cloud s
 
 Explore our Cloud Guard client solution in action:
 
-[**Cloud Guard**](https://cloud-guard-client.onrender.com/) 🌐
+[**Cloud Guard**](https://auth.cloud-guard.app/) 🌐
