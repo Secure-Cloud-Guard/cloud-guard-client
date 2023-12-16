@@ -7,3 +7,15 @@ The Cloud Guard project addresses the critical issue of data security in cloud s
 Explore our Cloud Guard client solution in action:
 
 [**Cloud Guard**](https://auth.cloud-guard.app/) 🌐
+
+## 📸 Screenshots
+
+![App Screenshot](https://github.com/Dmytro27Ind/images/blob/main/cloud-guard-client-2.png)
+![App Screenshot](https://github.com/Dmytro27Ind/images/blob/main/cloud-guard-client-1.png)
+
+## ⚙️ Tech Stack
+- Angular
+- AngularS Material
+- Tailwind
+- Vite
+- rxjs
