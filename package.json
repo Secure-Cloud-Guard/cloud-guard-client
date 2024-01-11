@@ -4,15 +4,13 @@
   "scripts": {
     "ng": "ng",
     "config-env": "ts-node ./src/assets/scripts/setEnv.ts",
-
+    "set-app-base-url": "node ./src/assets/scripts/updateBaseHref.js ./dist/client/browser/index.html",
     "start-auth": "npm run config-env -- --environment=dev && ng serve auth",
     "start-auth-prod": "npm run config-env -- --environment=prod && ng serve auth --configuration production",
     "build-auth": "npm run config-env -- --environment=prod && ng build --project=\"auth\" --configuration production",
-
     "start-client": "npm run config-env -- --environment=dev && ng serve client",
     "start-client-prod": "npm run config-env -- --environment=prod && ng serve client --configuration production",
-    "build-client": "npm run config-env -- --environment=prod && ng build --project=\"client\" --configuration production",
-
+    "build-client": "npm run config-env -- --environment=prod && ng build --project=\"client\" --configuration production && npm run set-app-base-url",
     "test": "ng test"
   },
   "private": true,
@@ -29,6 +27,7 @@
     "@angular/router": "^17.0.3",
     "angular-code-input": "^2.0.0",
     "aws-amplify": "^6.0.5",
+    "cheerio": "^1.0.0-rc.12",
     "ngx-logger": "^5.0.12",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
