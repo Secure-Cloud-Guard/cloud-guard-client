@@ -17,20 +17,26 @@ fs.readFile(filePath, 'utf8', (err, data) => {
   // Load HTML content into Cheerio
   const $ = cheerio.load(data);
 
-  // Find the <base> tag with href="/" and update its href attribute
-  const baseTag = $('base[href="/"]');
-  if (baseTag.length > 0) {
-    baseTag.attr('href', '/v1');
-
-    // Save the modified HTML back to the file
-    fs.writeFile(filePath, $.html(), 'utf8', (writeErr) => {
-      if (writeErr) {
-        console.error(`Error writing to file: ${writeErr.message}`);
-      } else {
-        console.log('Base href updated successfully.');
-      }
+  const updateElementPaths = (selector, attribute, prefix) => {
+    $(`${selector}[${attribute}^="${prefix}"]`).each((index, element) => {
+      const $el = $(element);
+      const currentPath = $el.attr(attribute);
+      $el.attr(attribute, `v1/${currentPath}`);
     });
-  } else {
-    console.log('No <base> tag with href="/" found in the HTML file.');
-  }
+  };
+
+  updateElementPaths('link', 'href', 'assets/');
+  updateElementPaths('link', 'href', 'styles-');
+  updateElementPaths('script', 'src', 'assets');
+  updateElementPaths('script', 'src', 'polyfills');
+  updateElementPaths('script', 'src', 'main');
+
+  // Save the modified HTML back to the file
+  fs.writeFile(filePath, $.html(), 'utf8', (writeErr) => {
+    if (writeErr) {
+      console.error(`Error writing to file: ${writeErr.message}`);
+    } else {
+      console.log('Base URL updated successfully.');
+    }
+  });
 });
