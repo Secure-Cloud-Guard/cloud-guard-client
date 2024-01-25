@@ -22,7 +22,6 @@ export class LoginComponent {
     event.preventDefault();
     this.cognitoService.signIn({ username: this.email, password: this.password }).then(() => {
       this.resetLoginForm();
-      window.location.href = 'https://cloud-guard.app/';
     })
   }
 

@@ -90,9 +90,8 @@ export class CognitoService {
       this.logger.log('nextStep: ', nextStep);
 
       if (isSignedIn) {
-        this.router.navigate([AppRoutes.MAIN.DASHBOARD.relativePath]).then(() => {
-          this.alertService.success('You have successfully logged in!')
-        });
+        this.alertService.success('You have successfully logged in!')
+        window.location.href = 'https://cloud-guard.app/';
       }
 
     } catch (error) {
@@ -104,10 +103,7 @@ export class CognitoService {
   public async signOut() {
     try {
       await signOut();
-
-      this.router.navigate([AppRoutes.AUTH.LOGIN.relativePath]).then(() => {
-        this.alertService.info('You have been successfully logged out.')
-      });
+      this.alertService.info('You have been successfully logged out.')
       this.logger.log('The user sign out');
 
     } catch (error) {
