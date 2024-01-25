@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ThemeService } from "../../services";
+import { CurrentProjectService, ThemeService } from "../../services";
 import { Theme } from "../../types";
+import { AssetsUrl } from "../../const";
 
 @Component({
   selector: 'app-logo',
@@ -8,9 +9,19 @@ import { Theme } from "../../types";
 })
 export class LogoComponent {
 
-  protected readonly Theme = Theme;
+  private logoDark: string = ''
+  private logoLight: string = ''
 
   constructor(
+    private currentProject: CurrentProjectService,
     protected readonly themeService: ThemeService
-  ) { }
+  ) {
+     const project = currentProject.getCurrentProject();
+     this.logoDark = AssetsUrl(project).logoDark;
+     this.logoLight = AssetsUrl(project).logoLight;
+  }
+
+  public getLogo(): string {
+    return this.themeService.theme === Theme.Dark ? this.logoDark : this.logoLight;
+  }
 }

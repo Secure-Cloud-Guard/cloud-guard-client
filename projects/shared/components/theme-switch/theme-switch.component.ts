@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { ThemeService } from "../../services";
+import { CurrentProjectService, ThemeService } from "../../services";
 import { Theme } from "../../types";
+import { AssetsUrl } from "../../const";
 
 @Component({
   selector: 'app-theme-switch',
@@ -14,11 +15,16 @@ export class ThemeSwitchComponent {
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
+    private currentProject: CurrentProjectService,
     protected readonly themeService: ThemeService
   ) {
+    const project = currentProject.getCurrentProject();
+    const moonIcon: string = AssetsUrl(project).moonIcon;
+    const sunIcon: string = AssetsUrl(project).sunIcon;
+
     this.matIconRegistry
-      .addSvgIcon('moon', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/moon.svg'))
-      .addSvgIcon('sun', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/sun.svg'));
+      .addSvgIcon('moon', this.domSanitizer.bypassSecurityTrustResourceUrl(moonIcon))
+      .addSvgIcon('sun', this.domSanitizer.bypassSecurityTrustResourceUrl(sunIcon));
   }
 
   /**

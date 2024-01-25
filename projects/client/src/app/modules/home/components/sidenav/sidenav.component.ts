@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SidenavItem } from "@modules/home/types";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { LocalStorageKeys, RouteService, ThemeColorService, Theme } from "@globalShared";
+import { LocalStorageKeys, RouteService, ThemeColorService, Theme, AssetsUrl, PROJECT } from "@globalShared";
 
 
 @Component({
@@ -21,7 +21,7 @@ export class SidenavComponent implements OnInit {
     private domSanitizer: DomSanitizer,
   ) {
     this.matIconRegistry
-      .addSvgIcon('github', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
+      .addSvgIcon('github', this.domSanitizer.bypassSecurityTrustResourceUrl(AssetsUrl(PROJECT.APP).githubIcon));
   }
 
   ngOnInit() {
