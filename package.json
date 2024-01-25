@@ -10,7 +10,7 @@
     "build-auth": "npm run config-env -- --environment=prod && ng build --project=\"auth\" --configuration production",
     "start-client": "npm run config-env -- --environment=dev && ng serve client",
     "start-client-prod": "npm run config-env -- --environment=prod && ng serve client --configuration production",
-    "build-client": "npm run config-env -- --environment=prod && ng build --project=\"client\" --configuration production && npm run set-app-base-url",
+    "build-client": "npm run config-env -- --environment=prod && ng build --project=\"client\" --configuration production",
     "test": "ng test"
   },
   "private": true,

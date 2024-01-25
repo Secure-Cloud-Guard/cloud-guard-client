@@ -2,9 +2,9 @@ import { environment } from '../../../src/environments/environment';
 import { PROJECT } from "./projects";
 
 const processUrl = (url: string, currentProject: string) => {
-  if (environment.production && currentProject === PROJECT.APP) {
-    return 'v1/' + url;
-  }
+  // if (environment.production && currentProject === PROJECT.APP) {
+  //   return 'v1/' + url;
+  // }
   return url;
 };
 
