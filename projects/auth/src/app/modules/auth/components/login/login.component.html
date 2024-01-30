@@ -1,3 +1,11 @@
+@if (showSpinner) {
+  <div class="absolute top-0 right-0 bottom-0 left-0 bg-opacity-40 z-40" [ngClass]="getSpinnerBgColor()">
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <mat-spinner [color]="themeColorService.getPrimaryColor()" diameter="65"></mat-spinner>
+    </div>
+  </div>
+}
+
 <div class="w-[97%] sm:w-[440px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
   <div class="flex justify-center mb-9 mr-5">
     <app-logo class="sm:scale-125"></app-logo>
@@ -37,21 +45,5 @@
         Register
       </a>
     </div>
-
-<!--      <br>-->
-<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.handleSignUp({email: 'dmytro27kagirov@gmail.com', password: 'Qwer!1234'})">Cognito Sing Up</button>-->
-<!--      <br>-->
-<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.handleSignUpConfirmation({username: 'dmytro27kagirov@gmail.com', confirmationCode: '488555'})">Cognito Confirm Sing Up</button>-->
-<!--      <br>-->
-<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.handleSignIn({username: 'dmytro27kagirov@gmail.com', password: 'Qwer!1234'})">Cognito Login</button>-->
-<!--      <br>-->
-<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.currentAuthenticatedUser()">Cognito Current User</button>-->
-<!--      <br>-->
-<!--      <button class="w-full" mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.fetchAuthSession()">Cognito Session</button>-->
   </mat-card>
 </div>
-
-<br>
-<button mat-raised-button [color]="themeColorService.getPrimaryColor()" (click)="cognitoService.signOut()">Sing Out</button>
-
-

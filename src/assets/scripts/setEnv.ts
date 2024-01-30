@@ -39,6 +39,8 @@ const environmentFileContent = `
       userPoolId: '${process.env.COGNITO_USER_POOL_ID}',
       userPoolWebClientId: '${process.env.COGNITO_USER_POOL_CLIENT_ID}',
     },
+    authAppUrl: '${isProduction ? 'https://auth.cloud-guard.app/' : 'http://localhost:4200/'}',
+    clientAppUrl: '${isProduction ? 'https://cloud-guard.app/' : 'http://localhost:4300/'}',
   };
 `;
 
@@ -49,6 +51,8 @@ const emptyEnvironmentFile = `
       userPoolId: '',
       userPoolWebClientId: '',
     },
+    authAppUrl: '',
+    clientAppUrl: '',
   };
 `;
 

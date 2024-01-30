@@ -16,6 +16,7 @@ import { LoggerModule, NgxLoggerLevel } from "ngx-logger";
 import { LoginComponent, ParticlesComponent, SocialIconsComponent, SignUpComponent } from '@modules/auth/components';
 import { SharedModule } from '@globalShared'
 import { environment } from "@app/../../../../src/environments/environment";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 
 @NgModule({
@@ -30,26 +31,27 @@ import { environment } from "@app/../../../../src/environments/environment";
     SignUpComponent,
     ParticlesComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    MatCardModule,
-    MatFormFieldModule,
-    BrowserAnimationsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    NgOptimizedImage,
-    SharedModule,
-    MatTooltipModule,
-    MatDividerModule,
-    MatStepperModule,
-    CodeInputModule,
-    FormsModule,
-    LoggerModule.forRoot({
-      level: NgxLoggerLevel.TRACE,
-      disableConsoleLogging: environment.production
-    }),
-  ]
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatCardModule,
+        MatFormFieldModule,
+        BrowserAnimationsModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        NgOptimizedImage,
+        SharedModule,
+        MatTooltipModule,
+        MatDividerModule,
+        MatStepperModule,
+        CodeInputModule,
+        FormsModule,
+        LoggerModule.forRoot({
+            level: NgxLoggerLevel.TRACE,
+            disableConsoleLogging: environment.production
+        }),
+        MatProgressSpinnerModule,
+    ]
 })
 export class AuthModule { }

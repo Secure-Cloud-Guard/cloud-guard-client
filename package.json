@@ -4,11 +4,10 @@
   "scripts": {
     "ng": "ng",
     "config-env": "ts-node ./src/assets/scripts/setEnv.ts",
-    "set-app-base-url": "node ./src/assets/scripts/updateBaseHref.js ./dist/client/browser/index.html",
-    "start-auth": "npm run config-env -- --environment=dev && ng serve auth",
+    "start-auth": "npm run config-env -- --environment=dev && ng serve --port 4200 auth",
     "start-auth-prod": "npm run config-env -- --environment=prod && ng serve auth --configuration production",
     "build-auth": "npm run config-env -- --environment=prod && ng build --project=\"auth\" --configuration production",
-    "start-client": "npm run config-env -- --environment=dev && ng serve client",
+    "start-client": "npm run config-env -- --environment=dev && ng serve --port 4300 client",
     "start-client-prod": "npm run config-env -- --environment=prod && ng serve client --configuration production",
     "build-client": "npm run config-env -- --environment=prod && ng build --project=\"client\" --configuration production",
     "test": "ng test"

@@ -3,8 +3,7 @@ import { NGXLogger } from "ngx-logger";
 import { Amplify, type ResourcesConfig } from "aws-amplify";
 import { signIn, signUp, signOut, confirmSignUp, resendSignUpCode, getCurrentUser, fetchAuthSession, type ConfirmSignUpInput, type SignInInput, type SignUpInput, type ResendSignUpCodeInput } from 'aws-amplify/auth';
 import { environment } from '@app/../../../../src/environments/environment';
-import { AppRoutes, AlertService } from "@globalShared";
-import { Router } from "@angular/router";
+import { AlertService } from "@globalShared";
 import { COGNITO_SERVICE_ERROR } from "@modules/auth/const";
 
 @Injectable({
@@ -14,7 +13,6 @@ export class CognitoService {
 
   constructor(
     private alertService: AlertService,
-    private router: Router,
     private logger: NGXLogger,
   ) {
     const authConfig: ResourcesConfig['Auth'] = {
@@ -91,12 +89,14 @@ export class CognitoService {
 
       if (isSignedIn) {
         this.alertService.success('You have successfully logged in!')
-        window.location.href = 'https://cloud-guard.app/';
+        window.location.href = environment.clientAppUrl;
       }
+      return isSignedIn;
 
     } catch (error) {
       this.alertService.error('Incorrect username or password');
       this.logger.error('error signing in', error);
+      return Promise.reject(COGNITO_SERVICE_ERROR);
     }
   }
 
@@ -106,6 +106,9 @@ export class CognitoService {
       this.alertService.info('You have been successfully logged out.')
       this.logger.log('The user sign out');
 
+      if (!window.location.href.startsWith(environment.authAppUrl)) {
+        window.location.href = environment.authAppUrl;
+      }
     } catch (error) {
       this.logger.error('error signing out: ', error);
     }
@@ -125,11 +128,13 @@ export class CognitoService {
   public async fetchAuthSession() {
     try {
       const session = await fetchAuthSession();
-
       this.logger.log('session: ', session);
+
+      return session;
 
     } catch (err) {
       this.logger.error(err);
+      return Promise.reject(COGNITO_SERVICE_ERROR);
     }
   }
 

@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SidenavItem } from "@modules/home/types";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { LocalStorageKeys, RouteService, ThemeColorService, Theme, AssetsUrl, PROJECT } from "@globalShared";
+import { LocalStorageKeys, RouteService, ThemeColorService, Theme, AppRoutes} from "@globalShared";
+import { environment } from '@app/../../../../src/environments/environment';
 
 
 @Component({
@@ -12,6 +13,8 @@ import { LocalStorageKeys, RouteService, ThemeColorService, Theme, AssetsUrl, PR
 export class SidenavComponent implements OnInit {
   @Input() items: SidenavItem[] = [];
 
+  protected readonly Theme = Theme;
+  protected readonly AppRoutes = AppRoutes;
   private _shortSidenav: boolean = false;
 
   constructor(
@@ -21,7 +24,7 @@ export class SidenavComponent implements OnInit {
     private domSanitizer: DomSanitizer,
   ) {
     this.matIconRegistry
-      .addSvgIcon('github', this.domSanitizer.bypassSecurityTrustResourceUrl(AssetsUrl(PROJECT.APP).githubIcon));
+      .addSvgIcon('github', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
   }
 
   ngOnInit() {
@@ -40,5 +43,13 @@ export class SidenavComponent implements OnInit {
     return this._shortSidenav;
   }
 
-  protected readonly Theme = Theme;
+  sidenavBtnClass(currentUrl: string): string {
+    return this.routeService.currentUrl === currentUrl
+      ? (this.themeColorService.getPrimaryColor() === 'primary' ? '!bg-primary-400 !text-primary-400' : '!bg-accent-200 !text-accent-200')
+      : '';
+  }
+
+  logout() {
+    window.location.href = environment.authAppUrl;
+  }
 }

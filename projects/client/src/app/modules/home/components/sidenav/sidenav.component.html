@@ -11,15 +11,17 @@
         <div class="flex flex-col gap-2 mt-7">
 
           @for (item of items; track item) {
-            <a mat-button
-               [routerLink]="item.url"
-               [ngClass]="routeService.currentUrl === item.url
-                  ? (themeColorService.getPrimaryColor() === 'primary' ? '!bg-primary-400 !text-primary-400' : '!bg-accent-200 !text-accent-200')
-                  : ''"
-              class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
-              <mat-icon>{{ item.icon }}</mat-icon>
-              <span>{{ item.label }}</span>
-            </a>
+            @if (item.url !== AppRoutes.AUTH.LOGIN.fullPath) {
+              <a mat-button [routerLink]="item.url" [ngClass]="sidenavBtnClass(item.url)" class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
+                <mat-icon>{{ item.icon }}</mat-icon>
+                <span>{{ item.label }}</span>
+              </a>
+            } @else {
+              <a mat-button (click)="logout()" [ngClass]="sidenavBtnClass(item.url)" class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
+                <mat-icon>{{ item.icon }}</mat-icon>
+                <span>{{ item.label }}</span>
+              </a>
+            }
           }
 
           <a mat-button

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { PROJECT, CurrentProjectService } from "@globalShared";
 
 @Component({
   selector: 'app-root',
@@ -8,7 +7,4 @@ import { PROJECT, CurrentProjectService } from "@globalShared";
 })
 export class AppComponent {
 
-  constructor(private currentProject: CurrentProjectService) {
-    currentProject.setCurrentProject(PROJECT.APP);
-  }
 }

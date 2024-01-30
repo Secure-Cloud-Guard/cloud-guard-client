@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CognitoService } from "@modules/auth/services";
-import { AppRoutes, ThemeColorService } from "@globalShared";
+import { AppRoutes, Theme, ThemeColorService, ThemeService } from "@globalShared";
 
 @Component({
   selector: 'app-login',
@@ -10,23 +10,35 @@ export class LoginComponent {
   email: string = "";
   password: string = "";
   hide: boolean = true;
+  showSpinner: boolean = false;
 
   protected readonly AppRoutes = AppRoutes;
 
   constructor(
     protected readonly cognitoService: CognitoService,
-    protected readonly themeColorService: ThemeColorService
-  ) { }
+    protected readonly themeColorService: ThemeColorService,
+    private themeService: ThemeService
+  ) {
+    this.cognitoService.fetchAuthSession().then((session) => {
+      if (session.tokens) {
+        this.cognitoService.signOut();
+      }
+    });
+  }
 
   onLogin(event: Event|MouseEvent) {
     event.preventDefault();
     this.cognitoService.signIn({ username: this.email, password: this.password }).then(() => {
-      this.resetLoginForm();
+      this.showSpinner = true;
     })
   }
 
   passwordToggle() {
     this.hide = !this.hide;
+  }
+
+  getSpinnerBgColor(): string {
+      return this.themeService.theme === Theme.Dark ? 'bg-black' : 'bg-white';
   }
 
   private resetLoginForm() {

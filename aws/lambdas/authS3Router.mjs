@@ -5,13 +5,9 @@ export const handler = async(event) => {
   console.log('event: ', event)
 
   try {
-    // console.log("url + '/index.html': ", url + '/index.html');
-
-    // const res = await fetch(url + '/index.html');
     const res = await fetch(url + event.path);
 
     console.log('event.path: ', event.path);
-    console.log("event.path.split('.'): ", event.path.split('.'));
     console.log("event.path.split('.').pop(): ", event.path.split('.').pop());
 
     const fileExt = event.path.split('.').pop();
@@ -58,7 +54,7 @@ export const handler = async(event) => {
 
     if (res.ok) {
       if (['png', 'gif', 'jpeg', 'jpg'].includes(fileExt)) {
-        // TODO For image types, return binary data
+        // For image types, return binary data
         const buffer = await res.arrayBuffer();
         return {
           statusCode: 200,
