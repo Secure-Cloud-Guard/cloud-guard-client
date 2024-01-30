@@ -18,7 +18,7 @@ fs.readFile(filePath, 'utf8', (readErr, data) => {
   // Perform string replacements
   const updatedFile = data
     .replace(/http:\/\/localhost:4300/g, 'https://cloud-guard.app')
-    .replace(/http:\/\/localhost:4200/g, 'https://auth.cloud-guard.app/');
+    .replace(/http:\/\/localhost:4200/g, 'https://auth.cloud-guard.app');
 
   // Write the modified content back to the file
   fs.writeFile(filePath, updatedFile, 'utf8', (writeErr) => {
