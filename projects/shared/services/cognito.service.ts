@@ -105,6 +105,8 @@ export class CognitoService {
     const win = document.getElementById('ifr')?.contentWindow;
     win.postMessage(JSON.parse(JSON.stringify(localStorage)), environment.clientAppUrl);
 
+    console.log('environment.clientAppUrl: ', environment.clientAppUrl);
+
     setTimeout(() => {
       window.location.href = environment.clientAppUrl;
     }, 500);
