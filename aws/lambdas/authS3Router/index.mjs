@@ -2,7 +2,7 @@
 const url = "http://cloud-guard-app.s3.eu-north-1.amazonaws.com";
 
 export const handler = async(event) => {
-  console.log('event: ', event)
+  console.log('authS3Router event: ', event)
 
   try {
     const res = await fetch(url + event.path);
