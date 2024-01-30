@@ -11,7 +11,7 @@ export class SocialIconsComponent {
 
   socialIcons: SocialIconParameters[] = [
     { icon: 'facebook-simple', colorClass: 'disabled', tooltip: 'Facebook', disabled: true },
-    { icon: 'google', colorClass: 'google', tooltip: 'Google', disabled: false },
+    { icon: 'google', colorClass: 'disabled', tooltip: 'Google', disabled: true },
     { icon: 'github', colorClass: 'disabled', tooltip: 'Github', disabled: true },
   ];
 

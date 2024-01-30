@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { CognitoService } from "@modules/auth/services";
-import { AppRoutes, Theme, ThemeColorService, ThemeService } from "@globalShared";
+import { CognitoService, AppRoutes, Theme, ThemeColorService, ThemeService } from "@globalShared";
 
 @Component({
   selector: 'app-login',

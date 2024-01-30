@@ -38,16 +38,25 @@
           </button>
 
           @for (item of items; track item.url) {
-            <button mat-icon-button
-                    matTooltip="{{ item.label }}"
-                    matTooltipPosition="right"
-                    [routerLink]="item.url"
-                    class="custom-icon-btn square !bg-opacity-[7%]"
-                    [ngClass]="routeService.currentUrl === item.url
-                      ? (themeColorService.getPrimaryColor() === 'primary' ? '!bg-primary-400 !text-primary-400' : '!bg-accent-200 !text-accent-200')
-                      : ''">
-              <mat-icon>{{ item.icon }}</mat-icon>
-            </button>
+            @if (item.url !== AppRoutes.AUTH.LOGIN.fullPath) {
+              <button mat-icon-button
+                      matTooltip="{{ item.label }}"
+                      matTooltipPosition="right"
+                      [routerLink]="item.url"
+                      class="custom-icon-btn square !bg-opacity-[7%]"
+                      [ngClass]="sidenavBtnClass(item.url)">
+                <mat-icon>{{ item.icon }}</mat-icon>
+              </button>
+            } @else {
+              <button mat-icon-button
+                      matTooltip="{{ item.label }}"
+                      matTooltipPosition="right"
+                      (click)="logout()"
+                      class="custom-icon-btn square !bg-opacity-[7%]"
+                      [ngClass]="sidenavBtnClass(item.url)">
+                <mat-icon>{{ item.icon }}</mat-icon>
+              </button>
+            }
           }
 
           <div class="!absolute bottom-4 !z-10 flex items-center">

@@ -9,6 +9,8 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { HeaderComponent, ThemeSwitchComponent, LogoComponent, GradientBackgroundComponent, AlertComponent } from "./components";
 import { RouterLink } from "@angular/router";
+import { LoggerModule, NgxLoggerLevel } from "ngx-logger";
+import { environment } from "../../src/environments/environment";
 
 
 @NgModule({
@@ -26,15 +28,19 @@ import { RouterLink } from "@angular/router";
     GradientBackgroundComponent
   ],
     imports: [
-        CommonModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatButtonModule,
-        NgOptimizedImage,
-        MatMenuModule,
-        MatTooltipModule,
-        MatSnackBarModule,
-        RouterLink
+      CommonModule,
+      MatIconModule,
+      MatToolbarModule,
+      MatButtonModule,
+      NgOptimizedImage,
+      MatMenuModule,
+      MatTooltipModule,
+      MatSnackBarModule,
+      RouterLink,
+      LoggerModule.forRoot({
+        level: NgxLoggerLevel.TRACE,
+        disableConsoleLogging: environment.production
+      }),
     ]
 })
 export class SharedModule { }

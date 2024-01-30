@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatStepper } from "@angular/material/stepper";
-import { CognitoService } from "@modules/auth/services";
-import { AlertService, AppRoutes, ThemeColorService } from "@globalShared";
+import { CognitoService, AlertService, AppRoutes, ThemeColorService } from "@globalShared";
 import { SignUpSteps } from "@modules/auth/types";
 
 @Component({

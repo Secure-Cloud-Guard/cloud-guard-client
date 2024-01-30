@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { NGXLogger } from "ngx-logger";
 import { Amplify, type ResourcesConfig } from "aws-amplify";
 import { signIn, signUp, signOut, confirmSignUp, resendSignUpCode, getCurrentUser, fetchAuthSession, type ConfirmSignUpInput, type SignInInput, type SignUpInput, type ResendSignUpCodeInput } from 'aws-amplify/auth';
-import { environment } from '@app/../../../../src/environments/environment';
-import { AlertService } from "@globalShared";
-import { COGNITO_SERVICE_ERROR } from "@modules/auth/const";
+import { environment } from '../../../src/environments/environment';
+import { AlertService } from "./alert.service";
+import { COGNITO_SERVICE_ERROR } from "../const";
 
 @Injectable({
   providedIn: 'root',
@@ -89,7 +89,7 @@ export class CognitoService {
 
       if (isSignedIn) {
         this.alertService.success('You have successfully logged in!')
-        window.location.href = environment.clientAppUrl;
+        await this.redirectToApp();
       }
       return isSignedIn;
 
@@ -98,6 +98,16 @@ export class CognitoService {
       this.logger.error('error signing in', error);
       return Promise.reject(COGNITO_SERVICE_ERROR);
     }
+  }
+
+  private async redirectToApp() {
+    // @ts-ignore
+    const win = document.getElementById('ifr')?.contentWindow;
+    win.postMessage(JSON.parse(JSON.stringify(localStorage)), environment.clientAppUrl);
+
+    setTimeout(() => {
+      window.location.href = environment.clientAppUrl;
+    }, 500);
   }
 
   public async signOut() {

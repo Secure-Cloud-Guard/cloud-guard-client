@@ -16,8 +16,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body class="mat-typography mat-app-background">
+<body class="main-app mat-typography mat-app-background">
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <app-root></app-root>
+
+  <script type="text/javascript">
+    /**
+     * Receiving message from other domain
+     */
+    window.addEventListener('message', function(event) {
+      if (event.origin === "http://localhost:4200") {
+        console.log('event: ', event);
+        if (event.data) {
+          Object.keys(event.data)?.forEach(key => {
+            if (key !== 'length') {
+              localStorage.setItem(key, event.data[key]);
+            }
+          });
+        }
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,8 +1,10 @@
 
 <div class="flex gap-8 justify-center items-center">
   @for (item of socialIcons; track item.icon) {
-    <button class="!flex social" [ngClass]="item.colorClass" mat-icon-button [disabled]="item.disabled" [matTooltip]="item.tooltip" aria-label="Button to login with Social">
-      <mat-icon [svgIcon]="item.icon"></mat-icon>
-    </button>
+    <div [matTooltip]="item.disabled ? 'Soon' : ''">
+      <button class="!flex social" [ngClass]="item.colorClass" mat-icon-button [disabled]="item.disabled" [matTooltip]="item.tooltip" aria-label="Button to login with Social">
+        <mat-icon [svgIcon]="item.icon"></mat-icon>
+      </button>
+    </div>
   }
 </div>

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AppRoutes } from "../../const";
 import { HeaderDropdownItem } from "../../types";
-import { environment } from "../../../../src/environments/environment";
+import { CognitoService } from "../../services";
 
 /**
  * Header component responsible for displaying the application's header and theme toggling functionality.
@@ -19,7 +19,11 @@ export class HeaderComponent {
     { icon: 'exit_to_app', label: 'Logout', url: AppRoutes.AUTH.LOGIN.fullPath },
   ];
 
+  constructor(
+    private cognitoService: CognitoService
+  ) { }
+
   logout() {
-    window.location.href = environment.authAppUrl;
+    this.cognitoService.signOut();
   }
 }

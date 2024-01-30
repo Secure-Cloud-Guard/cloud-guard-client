@@ -2,8 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SidenavItem } from "@modules/home/types";
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
-import { LocalStorageKeys, RouteService, ThemeColorService, Theme, AppRoutes} from "@globalShared";
-import { environment } from '@app/../../../../src/environments/environment';
+import { LocalStorageKeys, RouteService, ThemeColorService, Theme, AppRoutes, CognitoService } from "@globalShared";
 
 
 @Component({
@@ -22,6 +21,7 @@ export class SidenavComponent implements OnInit {
     protected readonly routeService: RouteService,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
+    private cognitoService: CognitoService,
   ) {
     this.matIconRegistry
       .addSvgIcon('github', this.domSanitizer.bypassSecurityTrustResourceUrl('assets/icons/github.svg'));
@@ -50,6 +50,6 @@ export class SidenavComponent implements OnInit {
   }
 
   logout() {
-    window.location.href = environment.authAppUrl;
+    this.cognitoService.signOut();
   }
 }
