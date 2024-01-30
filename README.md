@@ -1,3 +1,4 @@
+[![Workflow for S3 Deploy](https://github.com/Secure-Cloud-Guard/cloud-guard-client/actions/workflows/s3-deploy.yml/badge.svg)](https://github.com/Secure-Cloud-Guard/cloud-guard-client/actions/workflows/s3-deploy.yml) [![Deploying multiple Lambdas](https://github.com/Secure-Cloud-Guard/cloud-guard-client/actions/workflows/lamdas-deploy.yml/badge.svg)](https://github.com/Secure-Cloud-Guard/cloud-guard-client/actions/workflows/lamdas-deploy.yml)
 # ☁️ Cloud Guard
 
 The Cloud Guard project addresses the critical issue of data security in cloud storage, where data is hosted on third-party servers. While various data encryption methods are commonly used, cloud service providers still have access to unencrypted data. This project aims to propose a solution for securing data in cloud storage to prevent unauthorized access by providers while minimizing the overhead associated with data encryption and decryption at the user's side. 🛡️💾
