@@ -25,9 +25,8 @@
      * Receiving message from other domain
      */
     window.addEventListener('message', function(event) {
-      console.log('message event: ', event);
-
       if (event.origin === "http://localhost:4200") {
+        console.log('message event: ', event);
         if (event.data) {
           Object.keys(event.data)?.forEach(key => {
             if (key !== 'length') {
