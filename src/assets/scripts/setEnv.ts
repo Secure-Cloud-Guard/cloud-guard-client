@@ -41,6 +41,7 @@ const environmentFileContent = `
     },
     authAppUrl: '${isProduction ? 'https://auth.cloud-guard.app/' : 'http://localhost:4200/'}',
     clientAppUrl: '${isProduction ? 'https://cloud-guard.app/' : 'http://localhost:4300/'}',
+    serverUrl: '${isProduction ? 'http://localhost:3001/' : 'http://localhost:3001/'}',
   };
 `;
 
@@ -53,6 +54,7 @@ const emptyEnvironmentFile = `
     },
     authAppUrl: '',
     clientAppUrl: '',
+    serverUrl: '',
   };
 `;
 

@@ -6,6 +6,10 @@ import { SharedModule } from "@globalShared";
 import { HomeModule } from '@modules/home';
 import { AppComponent } from '@app/app.component';
 import { AppRoutingModule } from "@app/app-routing.module";
+import { PersonalVaultModule } from "@modules/personal-vault";
+import { ProfileModule } from "@modules/profile";
+import { SettingsModule } from "@modules/settings";
+import { StorageModule } from "@modules/storage";
 
 
 @NgModule({
@@ -18,7 +22,11 @@ import { AppRoutingModule } from "@app/app-routing.module";
     BrowserModule,
     HttpClientModule,
     HomeModule,
-    BrowserAnimationsModule
+    PersonalVaultModule,
+    ProfileModule,
+    SettingsModule,
+    StorageModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

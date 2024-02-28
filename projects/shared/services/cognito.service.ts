@@ -127,11 +127,13 @@ export class CognitoService {
   public async currentAuthenticatedUser() {
     try {
       const user = await getCurrentUser();
-
       this.logger.log('user: ', user);
+
+      return user;
 
     } catch (err) {
       this.logger.error(err);
+      return Promise.reject(COGNITO_SERVICE_ERROR);
     }
   }
 
@@ -148,4 +150,14 @@ export class CognitoService {
     }
   }
 
+  public async getAccessToken() {
+    try {
+      const session = await this.fetchAuthSession();
+      return session?.tokens?.accessToken.toString();
+
+    } catch (err) {
+      this.logger.error(err);
+      return Promise.reject(COGNITO_SERVICE_ERROR);
+    }
+  }
 }

@@ -9,6 +9,8 @@
       "@app/*": ["./app/*"],
       "@modules/*": ["./app/modules/*"],
       "@modules": ["./app/modules"],
+      "@types": ["./app/types"],
+      "@services": ["./app/services"],
       "@globalShared": ["./app/global-shared.ts"]
     }
   },

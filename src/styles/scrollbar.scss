@@ -19,7 +19,7 @@
 }
 
 .theme-dark ::-webkit-scrollbar-thumb {
-  background: #f1f1f1;
+  background: rgba(241, 241, 241, 0.65);
 }
 
 /* Add hover effect to the scrollbar thumb for both themes */
@@ -33,15 +33,15 @@
 }
 
 /* Customize scrollbar for Mozilla Firefox */
-.custom-sidebar {
+.custom-sidebar, div, mat-tree {
   scrollbar-width: thin;
 }
 
 /* Customize the scrollbar thumb (handle) and track (background) for both themes */
 .theme-light {
-  scrollbar-color: #888 #f1f1f1 ;
+  scrollbar-color: #888 #f1f1f1;
 }
 
 .theme-dark {
-  scrollbar-color: #f1f1f1 #333;
+  scrollbar-color: rgba(241, 241, 241, 0.65) #333;
 }

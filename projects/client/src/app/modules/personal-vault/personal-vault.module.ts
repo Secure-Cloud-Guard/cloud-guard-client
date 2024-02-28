@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PersonalVaultComponent } from '@modules/personal-vault/components';
+import { PersonalVaultComponent } from "@modules/personal-vault/components";
+import { FileManagerComponent } from "@app/components/file-manager/file-manager.component";
 
 
 @NgModule({
@@ -8,7 +9,8 @@ import { PersonalVaultComponent } from '@modules/personal-vault/components';
     PersonalVaultComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FileManagerComponent
   ]
 })
 export class PersonalVaultModule { }
