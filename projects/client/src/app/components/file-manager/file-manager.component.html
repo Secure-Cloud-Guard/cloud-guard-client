@@ -2,7 +2,7 @@
 <div class="flex flex-col h-[calc(100vh-100px)] border custom-border-color {{ themeService.theme === Theme.Dark ? 'theme-dark' : 'theme-light' }}">
   <div class="flex items-center justify-between h-11 px-3 py-1 border-b custom-border-color">
     <div class="flex items-center gap-1 header-buttons">
-      <button mat-button>
+      <button mat-button (click)="createFolderDialog()">
         <mat-icon>create_new_folder</mat-icon>
         <span>New folder</span>
       </button>
@@ -15,7 +15,7 @@
         <mat-icon>sort</mat-icon>
         <span>Sort by</span>
       </button>
-      <button mat-button (click)="refresh()">
+      <button mat-button (click)="refresh(this.currentPath)">
         <mat-icon>refresh</mat-icon>
         <span>Refresh</span>
       </button>
@@ -65,7 +65,7 @@
           <mat-icon>search</mat-icon>
         </button>
       </div>
-      <div class="file-list-wrap file-manager-dropzone">
+      <div class="file-list-wrap file-manager-dropzone" (contextmenu)="openFileManagerMenu($event)">
         <div class="dnd-area">
           <mat-icon class="no-drag">cloud_upload</mat-icon>
           <h2 class="no-drag">Drag and drop files here</h2>
@@ -73,7 +73,7 @@
         @if (viewMode === VIEW_MODE.MODULE) {
           <div class="file-list">
             @for (file of currentFolderFiles; track file.name) {
-              <div class="folder-wrap" (dblclick)="openFromList(file)">
+              <div class="folder-wrap" (dblclick)="openFromList(file)" (contextmenu)="openFileMenu($event, file)">
                 @if (file.isFolder) {
                   <mat-icon class="object-icon">folder</mat-icon>
                 } @else if (file.isImage) {
@@ -129,7 +129,7 @@
                 <td mat-cell *matCellDef="let element"> {{ element.lastModified | date:'MMMM d, y H:mm' }} </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="listColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: listColumns;" (dblclick)="openFromList(row)"></tr>
+              <tr mat-row *matRowDef="let row; columns: listColumns;" (dblclick)="openFromList(row)" (contextmenu)="openFileMenu($event, row)"></tr>
             </table>
           </div>
         }
@@ -138,3 +138,49 @@
 
   </div>
 </div>
+
+<div style="visibility: hidden; position: fixed;"
+     [style.left.px]="fileManagerMenuTopLeft.x"
+     [style.top.px]="fileManagerMenuTopLeft.y"
+     #clickFileManagerTrigger="matMenuTrigger"
+     [matMenuTriggerFor]="clickFileManagerMenu"></div>
+<mat-menu #clickFileManagerMenu="matMenu">
+  <div class="flex flex-col items-baseline px-3 text-[14px]">
+    <button mat-button (click)="createFolderDialog()">
+      <mat-icon>create_new_folder</mat-icon>
+      <span>New folder</span>
+    </button>
+    <button mat-button (click)="fileDropRef.click()">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>Upload Files</span>
+    </button>
+    <button mat-button disabled>
+      <mat-icon>sort</mat-icon>
+      <span>Sort by</span>
+    </button>
+    <button mat-button (click)="refresh(this.currentPath)">
+      <mat-icon>refresh</mat-icon>
+      <span>Refresh</span>
+    </button>
+  </div>
+</mat-menu>
+
+<div style="visibility: hidden; position: fixed;"
+     [style.left.px]="fileMenuTopLeft.x"
+     [style.top.px]="fileMenuTopLeft.y"
+     #clickFileTrigger="matMenuTrigger"
+     [matMenuTriggerFor]="clickFileMenu"></div>
+<mat-menu #clickFileMenu="matMenu">
+  <ng-template matMenuContent let-item="item">
+    <div class="flex flex-col items-baseline px-3 text-[14px]">
+      <button mat-button>
+        <mat-icon>cloud_download</mat-icon>
+        <span>Download</span>
+      </button>
+      <button mat-button (click)="deleteObject(item)">
+        <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </div>
+  </ng-template>
+</mat-menu>

@@ -52,7 +52,7 @@ export class AlertService {
 
     this.snackBar.openFromComponent(AlertComponent, {
       data: alertData,
-      duration: 3000,
+      duration: 6000,
       horizontalPosition: 'center',
       verticalPosition: 'top',
       panelClass: alertType + '-snackbar'

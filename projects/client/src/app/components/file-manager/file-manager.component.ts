@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTreeModule, MatTreeNestedDataSource } from "@angular/material/tree";
 import { NestedTreeControl } from "@angular/cdk/tree";
@@ -8,21 +8,30 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatInputModule } from "@angular/material/input";
 import { MatCardModule } from "@angular/material/card";
 import { MatTableModule } from "@angular/material/table";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { FormsModule } from "@angular/forms";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
+import { MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { FileManagerType, FileNode, VIEW_MODE } from "@types";
-import { AlertService, CognitoService, Theme, ThemeService } from "@globalShared";
+import { AlertService, CognitoService, Theme, ThemeColorService, ThemeService } from "@globalShared";
 import { S3Service } from "@services";
 
 @Component({
   selector: 'app-file-manager',
   standalone: true,
-  imports: [CommonModule, MatTreeModule, MatIconModule, MatButtonModule, MatTooltipModule, MatInputModule, MatCardModule, MatTableModule, NgxFilesizeModule],
+  imports: [CommonModule, MatTreeModule, MatIconModule, MatButtonModule, MatTooltipModule, MatInputModule, MatCardModule, MatTableModule, NgxFilesizeModule, MatMenuModule],
   templateUrl: './file-manager.component.html',
   styleUrl: './file-manager.component.scss'
 })
 export class FileManagerComponent implements AfterViewInit {
   @Input() type: FileManagerType = FileManagerType.Storage;
+
+  @ViewChild('clickFileManagerTrigger') clickFileManagerTrigger: MatMenuTrigger | undefined;
+  @ViewChild('clickFileTrigger') clickFileTrigger: MatMenuTrigger | undefined;
+  fileManagerMenuTopLeft =  {x: 0, y: 0}
+  fileMenuTopLeft =  {x: 0, y: 0}
 
   protected readonly Theme = Theme;
   protected readonly VIEW_MODE = VIEW_MODE;
@@ -40,6 +49,7 @@ export class FileManagerComponent implements AfterViewInit {
     private cognitoService: CognitoService,
     private s3Service: S3Service,
     private alertService: AlertService,
+    public dialog: MatDialog,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
   ) {
@@ -49,6 +59,7 @@ export class FileManagerComponent implements AfterViewInit {
       'docx': 'doc.svg',
       'xls': 'xls.svg',
       'xlsx': 'xls.svg',
+      'xlsm': 'xls.svg',
       'txt': 'txt.svg',
       'mp3': 'mp3.svg',
       'mp4': 'mp4.svg',
@@ -89,6 +100,35 @@ export class FileManagerComponent implements AfterViewInit {
     this.updateActiveFolder();
   }
 
+  openFileManagerMenu(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.fileManagerMenuTopLeft.x = event.clientX;
+    this.fileManagerMenuTopLeft.y = event.clientY;
+    this.clickFileManagerTrigger?.openMenu();
+  }
+
+  openFileMenu(event: MouseEvent, file: FileNode) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.fileMenuTopLeft.x = event.clientX;
+    this.fileMenuTopLeft.y = event.clientY;
+
+    if (this.clickFileTrigger) {
+      this.clickFileTrigger.menuData = { item: file };
+      this.clickFileTrigger?.openMenu();
+    }
+  }
+
+  async deleteObject(object: FileNode) {
+    const res = await this.s3Service.deleteObject(this.type, object.url, object.isFolder);
+    if (res) {
+      this.alertService.success(`The ${object.name} successfully deleted`);
+      this.refresh(this.currentPath);
+    }
+  }
+
   getType(object: FileNode): string {
     if (object.isFolder) {
       return 'Folder';
@@ -97,7 +137,7 @@ export class FileManagerComponent implements AfterViewInit {
     return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
   }
   getSvgIcon(object: FileNode): string {
-    const icons = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'mp3', 'mp4', 'zip', 'rar', 'jpg', 'jpeg', 'png'];
+    const icons = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'xlsm', 'txt', 'mp3', 'mp4', 'zip', 'rar', 'jpg', 'jpeg', 'png'];
     const fileType = this.getType(object);
     return icons.includes(fileType) ? fileType : 'file';
   }
@@ -345,5 +385,58 @@ export class FileManagerComponent implements AfterViewInit {
     return currentPath.length > 0
       ? currentPath + '/' + fileName
       : fileName;
+  }
+
+  createFolderDialog(): void {
+    const dialogRef = this.dialog.open(CreateFolderDialog, {
+      data: {
+        type: this.type,
+        baseUrl: this.generateObjectUrl('')
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.refresh(this.currentPath);
+      }
+    });
+  }
+}
+
+@Component({
+  selector: 'create-folder-dialog',
+  standalone: true,
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule, MatDialogClose, MatFormFieldModule, MatInputModule, FormsModule],
+  template: `
+    <h2 mat-dialog-title>Create New Folder</h2>
+    <mat-dialog-content class="mat-typography">
+      <mat-form-field [color]="themeColorService.getPrimaryColor()">
+        <mat-label>Folder Name</mat-label>
+        <input matInput [(ngModel)]="folderName">
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button (click)="create()" [color]="themeColorService.getPrimaryColor()">Create</button>
+    </mat-dialog-actions>
+  `
+})
+export class CreateFolderDialog {
+  folderName: string = ''
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { type: FileManagerType, baseUrl: string },
+    public dialogRef: MatDialogRef<CreateFolderDialog>,
+    public themeColorService: ThemeColorService,
+    private s3Service: S3Service,
+    private alertService: AlertService,
+  ) {}
+
+  async create() {
+    const res = await this.s3Service.createFolder(this.data.type, this.data.baseUrl + this.folderName);
+    if (res) {
+      this.alertService.success(`The folder ${this.folderName} successfully created`);
+    }
+    this.dialogRef.close(true);
   }
 }
