@@ -1,5 +1,5 @@
 
-<div class="flex flex-col h-[calc(100vh-100px)] border custom-border-color {{ themeService.theme === Theme.Dark ? 'theme-dark' : 'theme-light' }}">
+<div class="relative flex flex-col h-[calc(100vh-100px)] border custom-border-color {{ themeService.theme === Theme.Dark ? 'theme-dark' : 'theme-light' }}">
   <div class="flex items-center justify-between h-11 px-3 py-1 border-b custom-border-color">
     <div class="flex items-center gap-1 header-buttons">
       <button mat-button (click)="createFolderDialog()">
@@ -135,8 +135,38 @@
         }
       </div>
     </div>
-
   </div>
+
+  @if (showUploading) {
+    <div class="uploading-wrap">
+      <mat-icon class="close-uploading" (click)="closeUploading()">close</mat-icon>
+      <div class="uploading">
+        @for (file of uploadingFiles; track file.name) {
+          <div class="single-file">
+            <mat-icon class="object-icon custom-file-icon" svgIcon="{{ getSvgIconByType(getTypeByName(file.name)) }}"></mat-icon>
+            <div class="info">
+              <h4 class="file-name">
+                {{ file.name }}
+              </h4>
+              <p class="file-size">
+                {{ file.size | filesize }}
+              </p>
+              <mat-progress-bar [color]="themeColorService.getPrimaryColor()" mode="determinate" [value]="file.progress"></mat-progress-bar>
+            </div>
+            @if (!file.uploadingStarted) {
+              <mat-icon class="uploading-control delete" (click)="deleteFromUploading($index)">delete</mat-icon>
+            } @else if (file.uploadingCompleted) {
+              <mat-icon class="uploading-control">done</mat-icon>
+            } @else if (file.uploadingError) {
+              <mat-icon class="uploading-control">error</mat-icon>
+            } @else {
+              <mat-icon class="uploading-control">schedule</mat-icon>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
 </div>
 
 <div style="visibility: hidden; position: fixed;"
@@ -173,7 +203,7 @@
 <mat-menu #clickFileMenu="matMenu">
   <ng-template matMenuContent let-item="item">
     <div class="flex flex-col items-baseline px-3 text-[14px]">
-      <button mat-button>
+      <button mat-button (click)="download(item)">
         <mat-icon>cloud_download</mat-icon>
         <span>Download</span>
       </button>

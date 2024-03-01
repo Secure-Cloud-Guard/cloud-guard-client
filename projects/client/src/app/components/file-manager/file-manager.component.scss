@@ -105,7 +105,7 @@
 }
 
 mat-icon {
-  opacity: 0.6;
+  opacity: 0.75;
 }
 
 .custom-file-icon {
@@ -170,6 +170,77 @@ mat-icon {
     .expand-icon {
       font-size: 18px !important;
       margin: 0 3px;
+    }
+  }
+}
+
+.uploading-wrap {
+  position: absolute;
+  bottom: 27px;
+  right: 22px;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 30px 0 24px 0;
+  box-shadow: rgba(50, 50, 93, 0.15) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  background: var(--mdc-elevated-card-container-color);
+
+  .close-uploading {
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 14px;
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .uploading {
+    max-height: 500px;
+    min-width: 350px;
+    overflow: auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .single-file {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 13px;
+
+    mat-icon {
+      font-size: 30px;
+      width: 30px;
+      height: 30px;
+    }
+
+    .info {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+      .file-name {
+        max-width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .file-size {
+        opacity: 0.65;
+        margin-bottom: 5px;
+      }
+    }
+
+    .uploading-control {
+      opacity: 0.6;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+
+      &.delete {
+        cursor: pointer;
+      }
     }
   }
 }

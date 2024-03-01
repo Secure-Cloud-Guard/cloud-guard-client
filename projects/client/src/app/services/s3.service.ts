@@ -36,6 +36,43 @@ export class S3Service {
     return await this.fetch('put', `s3/bucket/${type}/objectService/${folderUrl}/func/createFolder`) as FileNode[];
   }
 
+  async downloadObject(type: FileManagerType, objectUrl: string, isFolder: boolean): Promise<any> {
+    try {
+      const response = await fetch(this.url + `api/s3/bucket/${type}/objects/${objectUrl}`, {
+        'method' : 'GET',
+        'headers' : {
+          'Authorization': 'Bearer ' + this.accessToken,
+          'Folder': isFolder ? 'true' : 'false'
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download file: ' + response.statusText);
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = isFolder
+        ? objectUrl.slice(0, -1).split('/').pop() as string
+        : objectUrl.split('/').pop() as string;
+
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Clean up the object URL to release resources
+      URL.revokeObjectURL(url);
+      return true;
+
+    } catch (error) {
+      this.errorHandler(error);
+      return null;
+    }
+  }
+
   async deleteObject(type: FileManagerType, objectUrl: string, isFolder: boolean): Promise<boolean> {
     const options: any = {}
     if (isFolder) {
@@ -79,6 +116,8 @@ export class S3Service {
 
     if (error?.error?.message) {
       this.alertService.error(error.error.message);
+    } else if (error?.message) {
+      this.alertService.error(error.message);
     }
 
     if (error.status === StatusCodes.UNAUTHORIZED) {

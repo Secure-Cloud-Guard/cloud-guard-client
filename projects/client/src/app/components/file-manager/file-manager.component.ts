@@ -8,6 +8,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatInputModule } from "@angular/material/input";
 import { MatCardModule } from "@angular/material/card";
 import { MatTableModule } from "@angular/material/table";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { FormsModule } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
@@ -21,7 +22,7 @@ import { S3Service } from "@services";
 @Component({
   selector: 'app-file-manager',
   standalone: true,
-  imports: [CommonModule, MatTreeModule, MatIconModule, MatButtonModule, MatTooltipModule, MatInputModule, MatCardModule, MatTableModule, NgxFilesizeModule, MatMenuModule],
+  imports: [CommonModule, MatTreeModule, MatIconModule, MatButtonModule, MatTooltipModule, MatInputModule, MatCardModule, MatTableModule, NgxFilesizeModule, MatMenuModule, MatProgressBarModule],
   templateUrl: './file-manager.component.html',
   styleUrl: './file-manager.component.scss'
 })
@@ -43,15 +44,18 @@ export class FileManagerComponent implements AfterViewInit {
   dataSource = new MatTreeNestedDataSource<FileNode>();
   private fileTree: FileNode[] = [];
   currentFolderFiles: FileNode[] = [];
+  uploadingFiles: any[] = [];
+  showUploading: boolean = false;
 
   constructor(
     protected readonly themeService: ThemeService,
     private cognitoService: CognitoService,
     private s3Service: S3Service,
     private alertService: AlertService,
-    public dialog: MatDialog,
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
+    public dialog: MatDialog,
+    public themeColorService: ThemeColorService,
   ) {
     const fileIconMapping: { [key: string]: string } = {
       'pdf': 'pdf.svg',
@@ -121,6 +125,13 @@ export class FileManagerComponent implements AfterViewInit {
     }
   }
 
+  async download(object: FileNode) {
+    const res = await this.s3Service.downloadObject(this.type, object.url, object.isFolder);
+    if (res) {
+      this.alertService.success(`The ${object.name} successfully downloaded`);
+    }
+  }
+
   async deleteObject(object: FileNode) {
     const res = await this.s3Service.deleteObject(this.type, object.url, object.isFolder);
     if (res) {
@@ -129,17 +140,25 @@ export class FileManagerComponent implements AfterViewInit {
     }
   }
 
+  getTypeByName(fileName: string): string {
+    const parts = fileName.split('.');
+    return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+  }
+
   getType(object: FileNode): string {
     if (object.isFolder) {
       return 'Folder';
     }
-    const parts = object.name.split('.');
-    return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+    return this.getTypeByName(object.name);
+  }
+
+  getSvgIconByType(fileType: string): string {
+    const icons = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'xlsm', 'txt', 'mp3', 'mp4', 'zip', 'rar', 'jpg', 'jpeg', 'png'];
+    return icons.includes(fileType) ? fileType : 'file';
   }
   getSvgIcon(object: FileNode): string {
-    const icons = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'xlsm', 'txt', 'mp3', 'mp4', 'zip', 'rar', 'jpg', 'jpeg', 'png'];
     const fileType = this.getType(object);
-    return icons.includes(fileType) ? fileType : 'file';
+    return this.getSvgIconByType(fileType);
   }
 
   hasChild = (_: number, node: FileNode) => {
@@ -338,42 +357,67 @@ export class FileManagerComponent implements AfterViewInit {
     this.uploadFiles(target.files);
   }
 
+  closeUploading() {
+    this.showUploading = false;
+  }
+
+  deleteFromUploading(index: number) {
+    if (index >= 0 && index < this.uploadingFiles.length) {
+      const dt = new DataTransfer();
+      for (let i = 0; i < this.uploadingFiles.length; i++) {
+        if (i !== index) {
+          dt.items.add(this.uploadingFiles[i]);
+        }
+      }
+      this.uploadingFiles = dt.files as any;
+    }
+  }
+
   private uploadFiles(files: any) {
+    this.showUploading = true;
+    this.uploadingFiles = files;
     let currentIndex = 0;
 
     const readFile = (index: number) => {
-      if (index < files.length) {
+      if (index < this.uploadingFiles.length) {
         const fileReader = new FileReader();
+        this.uploadingFiles[index].uploadingStarted = true;
 
         fileReader.onload = async (event) => {
           const content = event?.target?.result as ArrayBuffer;
           const CHUNK_SIZE = 10 * 1024 * 1024;   // min chunk 10 MB
           const totalChunks = content?.byteLength > 0 ? content?.byteLength / CHUNK_SIZE : 1;
-          const fileUrl = this.generateObjectUrl(files[index].name);
+          const fileUrl = this.generateObjectUrl(this.uploadingFiles[index].name);
           const fileUniqueUrl = Math.random().toString(36).slice(-6) + fileUrl;
+          const progressUnit = 100 / totalChunks;
           const uploadedParts = []
 
-          console.log('content: ', content);
-
+          this.uploadingFiles[index].progress = 0;
           await this.s3Service.createMultipartUpload(this.type, fileUrl);
 
           for (let chunk = 0; chunk < totalChunks; chunk++) {
             let CHUNK = content.slice(chunk * CHUNK_SIZE, (chunk + 1) * CHUNK_SIZE);
             const uploadedPart = await this.s3Service.uploadObjectPart(this.type, fileUniqueUrl, CHUNK, chunk + 1);
             uploadedParts.push(uploadedPart);
+            this.uploadingFiles[index].progress += progressUnit;
           }
 
           const res = await this.s3Service.completeMultipartUpload(this.type, fileUrl, uploadedParts);
           if (res) {
-            this.alertService.success(`The ${files[index].name} successfully uploaded to the cloud`);
+            this.uploadingFiles[index].progress = 100;
+            this.uploadingFiles[index].uploadingCompleted = true;
+            this.alertService.success(`The ${this.uploadingFiles[index].name} successfully uploaded to the cloud`);
+          } else {
+            this.uploadingFiles[index].uploadingError = true;
           }
 
           readFile(index + 1);
         };
 
-        fileReader.readAsArrayBuffer(files[index]);
+        fileReader.readAsArrayBuffer(this.uploadingFiles[index]);
       } else {
         this.refresh(this.currentPath);
+        this.showUploading = false;
       }
     };
 
