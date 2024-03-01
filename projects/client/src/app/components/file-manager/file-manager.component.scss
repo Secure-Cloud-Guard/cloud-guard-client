@@ -104,10 +104,6 @@
   pointer-events: none;
 }
 
-mat-icon {
-  opacity: 0.75;
-}
-
 .custom-file-icon {
   opacity: 1 !important;
 }
@@ -246,6 +242,9 @@ mat-icon {
 }
 
 .theme-dark {
+  mat-icon {
+    opacity: 0.75;
+  }
   .dnd-area {
     border: 3px dashed #c4c4c4;
     background: rgba(45, 45, 45, 0.7);
@@ -271,6 +270,9 @@ mat-icon {
 }
 
 .theme-light {
+  mat-icon {
+    opacity: 0.6;
+  }
   .dnd-area {
     border: 3px dashed #5b5b5b;
     background: rgba(255, 255, 255, 0.6);
