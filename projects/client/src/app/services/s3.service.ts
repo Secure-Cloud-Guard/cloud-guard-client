@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { AlertService, CognitoService } from "../global-shared";
 import { environment } from "../../../../../src/environments/environment";
 import { FileManagerType, FileNode } from "@types";
+import { CryptoService } from "@app/services/crypto.service";
 
 
 @Injectable({
@@ -18,6 +19,7 @@ export class S3Service {
     private cognitoService: CognitoService,
     private http: HttpClient,
     private alertService: AlertService,
+    private cryptoService: CryptoService
   ) {
     this.cognitoService.getAccessToken().then((accessToken) => {
       this.accessToken = accessToken ?? '';
@@ -25,19 +27,55 @@ export class S3Service {
   }
 
   async getObjects(type: FileManagerType): Promise<FileNode[]> {
-    return await this.fetch('get', `s3/bucket/${type}/objects`) as FileNode[];
+    const objects = await this.fetch('get', `s3/bucket/${type}/objects`) as FileNode[];
+
+    if (type === FileManagerType.PersonalVault && objects.length > 0) {
+      const traverse = async (obj: FileNode) => {
+        if (obj.name !== '/') {
+          obj.name = await this.cryptoService.decryptName(obj.name);
+          obj.url = await this.cryptoService.decryptUrl(obj.url);
+        }
+
+        if (obj?.children) {
+          const children = obj.children;
+          for (let i = 0; i < children.length; i++) {
+            await traverse(children[i]);
+          }
+        }
+      }
+      await traverse(objects[0]);
+    }
+
+    return objects;
   }
 
-  async getImagePreview(type: FileManagerType, imageName: string): Promise<string> {
-    return await this.fetch('get', `s3/bucket/${type}/objectService/${imageName}/func/image`) as string;
+  async getImagePreview(type: FileManagerType, imageUrl: string): Promise<string> {
+    if (type === FileManagerType.PersonalVault) {
+      imageUrl = await this.cryptoService.encryptUrl(imageUrl);
+    }
+    const base64Image = await this.fetch('get', `s3/bucket/${type}/objectService/${imageUrl}/func/image`) as string;
+
+    if (type === FileManagerType.PersonalVault) {
+      const buffer = this.cryptoService.base64ToArrayBuffer(base64Image);
+      const decrypted = await this.cryptoService.decrypt(buffer);
+      return this.cryptoService.arrayBufferToBase64(decrypted);
+    }
+    return base64Image;
   }
 
   async createFolder(type: FileManagerType, folderUrl: string): Promise<FileNode[]> {
+    if (type === FileManagerType.PersonalVault) {
+      folderUrl = await this.cryptoService.encryptUrl(folderUrl);
+    }
     return await this.fetch('put', `s3/bucket/${type}/objectService/${folderUrl}/func/createFolder`) as FileNode[];
   }
 
   async downloadObject(type: FileManagerType, objectUrl: string, isFolder: boolean): Promise<any> {
     try {
+      if (type === FileManagerType.PersonalVault) {
+        objectUrl = await this.cryptoService.encryptUrl(objectUrl);
+      }
+
       const response = await fetch(this.url + `api/s3/bucket/${type}/objects/${objectUrl}`, {
         'method' : 'GET',
         'headers' : {
@@ -50,10 +88,25 @@ export class S3Service {
         throw new Error('Failed to download file: ' + response.statusText);
       }
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      if (type === FileManagerType.PersonalVault) {
+        objectUrl = await this.cryptoService.decryptUrl(objectUrl);
+      }
 
+      const blob = await response.blob();
+      let url;
+
+      if (type === FileManagerType.PersonalVault) {
+        const buffer = await this.cryptoService.blobToArrayBuffer(blob);
+        const decrypted = await this.cryptoService.decrypt(buffer);
+        const mimeType = response.headers.get('Content-Type') ?? 'text/plain';
+        const decryptedBlob = this.cryptoService.arrayBufferToBlob(decrypted, mimeType);
+
+        url = URL.createObjectURL(decryptedBlob);
+      } else {
+        url = URL.createObjectURL(blob);
+      }
+
+      const a = document.createElement('a');
       a.href = url;
       a.download = isFolder
         ? objectUrl.slice(0, -1).split('/').pop() as string
@@ -75,23 +128,67 @@ export class S3Service {
 
   async deleteObject(type: FileManagerType, objectUrl: string, isFolder: boolean): Promise<boolean> {
     const options: any = {}
+
     if (isFolder) {
       options.body = { isFolder }
     }
+    if (type === FileManagerType.PersonalVault) {
+      objectUrl = await this.cryptoService.encryptUrl(objectUrl);
+    }
+
     return await this.fetch('delete', `s3/bucket/${type}/objects/${objectUrl}`, options) as boolean;
   }
 
-  async createMultipartUpload(type: FileManagerType, fileUrl: string): Promise<boolean> {
+  async uploadObject(
+    type: FileManagerType,
+    fileUrl: string,
+    content: ArrayBuffer,
+    onStart: () => void,
+    onProgress: (progressDelta: number) => void,
+    onComplete: () => void,
+    onError: () => void,
+  ) {
+
+    if (type === FileManagerType.PersonalVault) {
+      content = await this.cryptoService.encrypt(content);
+      fileUrl = await this.cryptoService.encryptUrl(fileUrl);
+    }
+
+    const CHUNK_SIZE = 10 * 1024 * 1024;   // min chunk 10 MB
+    const totalChunks = content?.byteLength > 0 ? content?.byteLength / CHUNK_SIZE : 1;
+    const fileUniqueUrl = Math.random().toString(36).slice(-6) + fileUrl;
+    const progressDelta = 100 / totalChunks;
+    const uploadedParts = []
+
+    onStart();
+    await this.createMultipartUpload(type, fileUrl);
+
+    for (let chunk = 0; chunk < totalChunks; chunk++) {
+      let CHUNK = content.slice(chunk * CHUNK_SIZE, (chunk + 1) * CHUNK_SIZE);
+      const uploadedPart = await this.uploadObjectPart(type, fileUniqueUrl, CHUNK, chunk + 1);
+      uploadedParts.push(uploadedPart);
+      onProgress(progressDelta);
+    }
+
+    const res = await this.completeMultipartUpload(type, fileUrl, uploadedParts);
+    if (res) {
+      onComplete();
+    } else {
+      onError();
+    }
+  }
+
+  private async createMultipartUpload(type: FileManagerType, fileUrl: string): Promise<boolean> {
     return await this.fetch('put', `s3/bucket/${type}/objects/${fileUrl}`) as boolean;
   }
 
-  async completeMultipartUpload(type: FileManagerType, fileUrl: string, uploadedParts: any): Promise<boolean> {
+  private async completeMultipartUpload(type: FileManagerType, fileUrl: string, uploadedParts: any): Promise<boolean> {
     return await this.fetch('post', `s3/bucket/${type}/objects/${fileUrl}`, {
       body: { uploadedParts }
     }) as boolean;
   }
 
-  async uploadObjectPart(type: FileManagerType, fileUrl: string, fileContent: any, partNumber: number): Promise<any> {
+  private async uploadObjectPart(type: FileManagerType, fileUrl: string, fileContent: any, partNumber: number): Promise<any> {
     try {
       const response = await fetch(this.url + `api/s3/bucket/${type}/objects/${fileUrl}`, {
         'method' : 'PATCH',

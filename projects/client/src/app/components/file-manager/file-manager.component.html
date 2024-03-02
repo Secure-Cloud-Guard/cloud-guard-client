@@ -1,5 +1,36 @@
 
 <div class="relative flex flex-col h-[calc(100vh-100px)] border custom-border-color {{ themeService.theme === Theme.Dark ? 'theme-dark' : 'theme-light' }}">
+
+  @if (!isKeySet()) {
+    <div class="key-not-available">
+      <mat-card class="key-card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <mat-card-content>
+          <h2>
+            <mat-icon [color]="themeColorService.getPrimaryColor()">vpn_key</mat-icon>
+            Client-Side Encryption Key
+          </h2>
+          <div class="key-info-wrap">
+            <mat-icon [color]="themeColorService.getPrimaryColor()">info</mat-icon>
+            <div class="key-info">
+              <p>To use the Personal Vault, set up the encryption key:</p>
+              <ul>
+                <li>Generate a new key and save it to a file.</li>
+                <li>Or select a key file from your computer.</li>
+              </ul>
+              <p>Keep your key secure and do not share it with others.</p>
+            </div>
+          </div>
+          <div class="key-controls">
+            <button mat-stroked-button [color]="themeColorService.getPrimaryColor()" (click)="generateKey()">Generate Key</button>
+            <span>or</span>
+            <input type="file" class="hidden" #keyFileInput (change)="onKeyFileSelected($event.target)">
+            <button mat-stroked-button [color]="themeColorService.getPrimaryColor()" (click)="keyFileInput.click()">Select Key File</button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
   <div class="flex items-center justify-between h-11 px-3 py-1 border-b custom-border-color">
     <div class="flex items-center gap-1 header-buttons">
       <button mat-button (click)="createFolderDialog()">

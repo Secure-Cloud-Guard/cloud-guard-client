@@ -18,6 +18,7 @@ import { NgxFilesizeModule } from "ngx-filesize";
 import { FileManagerType, FileNode, VIEW_MODE } from "@types";
 import { AlertService, CognitoService, Theme, ThemeColorService, ThemeService } from "@globalShared";
 import { S3Service } from "@services";
+import { CryptoService } from "@app/services/crypto.service";
 
 @Component({
   selector: 'app-file-manager',
@@ -56,6 +57,7 @@ export class FileManagerComponent implements AfterViewInit {
     private domSanitizer: DomSanitizer,
     public dialog: MatDialog,
     public themeColorService: ThemeColorService,
+    private cryptoService: CryptoService
   ) {
     const fileIconMapping: { [key: string]: string } = {
       'pdf': 'pdf.svg',
@@ -384,33 +386,25 @@ export class FileManagerComponent implements AfterViewInit {
         this.uploadingFiles[index].uploadingStarted = true;
 
         fileReader.onload = async (event) => {
-          const content = event?.target?.result as ArrayBuffer;
-          const CHUNK_SIZE = 10 * 1024 * 1024;   // min chunk 10 MB
-          const totalChunks = content?.byteLength > 0 ? content?.byteLength / CHUNK_SIZE : 1;
-          const fileUrl = this.generateObjectUrl(this.uploadingFiles[index].name);
-          const fileUniqueUrl = Math.random().toString(36).slice(-6) + fileUrl;
-          const progressUnit = 100 / totalChunks;
-          const uploadedParts = []
-
-          this.uploadingFiles[index].progress = 0;
-          await this.s3Service.createMultipartUpload(this.type, fileUrl);
-
-          for (let chunk = 0; chunk < totalChunks; chunk++) {
-            let CHUNK = content.slice(chunk * CHUNK_SIZE, (chunk + 1) * CHUNK_SIZE);
-            const uploadedPart = await this.s3Service.uploadObjectPart(this.type, fileUniqueUrl, CHUNK, chunk + 1);
-            uploadedParts.push(uploadedPart);
-            this.uploadingFiles[index].progress += progressUnit;
-          }
-
-          const res = await this.s3Service.completeMultipartUpload(this.type, fileUrl, uploadedParts);
-          if (res) {
-            this.uploadingFiles[index].progress = 100;
-            this.uploadingFiles[index].uploadingCompleted = true;
-            this.alertService.success(`The ${this.uploadingFiles[index].name} successfully uploaded to the cloud`);
-          } else {
-            this.uploadingFiles[index].uploadingError = true;
-          }
-
+          await this.s3Service.uploadObject(
+            this.type,
+            this.generateObjectUrl(this.uploadingFiles[index].name),
+            event?.target?.result as ArrayBuffer,
+            () => {
+              this.uploadingFiles[index].progress = 0;
+            },
+            (progressDelta: number) => {
+              this.uploadingFiles[index].progress += progressDelta;
+            },
+            () => {
+              this.uploadingFiles[index].progress = 100;
+              this.uploadingFiles[index].uploadingCompleted = true;
+              this.alertService.success(`The ${this.uploadingFiles[index].name} successfully uploaded to the cloud`);
+            },
+            () => {
+              this.uploadingFiles[index].uploadingError = true;
+            }
+          );
           readFile(index + 1);
         };
 
@@ -444,6 +438,22 @@ export class FileManagerComponent implements AfterViewInit {
         this.refresh(this.currentPath);
       }
     });
+  }
+
+  isKeySet(): boolean {
+    return this.cryptoService.isKeySet() && this.type === FileManagerType.PersonalVault;
+  }
+
+  async generateKey() {
+    await this.cryptoService.generateKey();
+    await this.refresh();
+  }
+
+  async onKeyFileSelected(target: any) {
+    if (target.files.length > 0) {
+      await this.cryptoService.selectKeyFromFile(target.files[0]);
+      await this.refresh();
+    }
   }
 }
 

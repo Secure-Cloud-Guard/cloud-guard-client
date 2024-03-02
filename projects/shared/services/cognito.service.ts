@@ -137,6 +137,17 @@ export class CognitoService {
     }
   }
 
+  public async currentUserId() {
+    try {
+      const { userId } = await this.currentAuthenticatedUser();
+      return userId;
+
+    } catch (err) {
+      this.logger.error(err);
+      return Promise.reject(COGNITO_SERVICE_ERROR);
+    }
+  }
+
   public async fetchAuthSession() {
     try {
       const session = await fetchAuthSession();
