@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { lastValueFrom } from "rxjs";
+import * as JSZip from "jszip";
 import { StatusCodes } from 'http-status-codes';
 import { AlertService, CognitoService } from "../global-shared";
 import { environment } from "../../../../../src/environments/environment";
@@ -96,12 +97,30 @@ export class S3Service {
       let url;
 
       if (type === FileManagerType.PersonalVault) {
-        const buffer = await this.cryptoService.blobToArrayBuffer(blob);
-        const decrypted = await this.cryptoService.decrypt(buffer);
-        const mimeType = response.headers.get('Content-Type') ?? 'text/plain';
-        const decryptedBlob = this.cryptoService.arrayBufferToBlob(decrypted, mimeType);
+        if (!isFolder) {
+          const buffer = await this.cryptoService.blobToArrayBuffer(blob);
+          const decrypted = await this.cryptoService.decrypt(buffer);
+          const mimeType = response.headers.get('Content-Type') ?? 'text/plain';
+          const decryptedBlob = this.cryptoService.arrayBufferToBlob(decrypted, mimeType);
+          url = URL.createObjectURL(decryptedBlob);
 
-        url = URL.createObjectURL(decryptedBlob);
+        } else {
+          const zip = new JSZip();
+          const decryptedZip = new JSZip();
+          await zip.loadAsync(blob);
+
+          await Promise.all(
+            Object.entries(zip.files).map(async ([fileUrl, file]) => {
+              const decryptedUrl = await this.cryptoService.decryptUrl(fileUrl);
+              const data = await file.async("arraybuffer");
+              const decryptedData = data.byteLength > 0 ? await this.cryptoService.decrypt(data) : data;
+
+              decryptedZip.file(decryptedUrl, decryptedData);
+            })
+          );
+          const decryptedBlob = await decryptedZip.generateAsync({ type: 'blob' });
+          url = URL.createObjectURL(decryptedBlob);
+        }
       } else {
         url = URL.createObjectURL(blob);
       }
