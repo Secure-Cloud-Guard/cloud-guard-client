@@ -15,6 +15,7 @@ import { CryptoService } from "@app/services/crypto.service";
 export class S3Service {
   private url: string = environment.serverUrl;
   private accessToken: string = '';
+  private _loading: boolean = false;
 
   constructor(
     private cognitoService: CognitoService,
@@ -27,12 +28,17 @@ export class S3Service {
     });
   }
 
+  get loading(): boolean {
+    return this._loading;
+  }
+
   async getObjects(type: FileManagerType): Promise<FileNode[]> {
     const objects = await this.fetch('get', `s3/bucket/${type}/objects`) as FileNode[];
 
     if (type === FileManagerType.PersonalVault && objects.length > 0) {
       const traverse = async (obj: FileNode) => {
         if (obj.name !== '/') {
+          obj.encryptedUrl = obj.url;
           obj.name = await this.cryptoService.decryptName(obj.name);
           obj.url = await this.cryptoService.decryptUrl(obj.url);
         }
@@ -71,17 +77,14 @@ export class S3Service {
     return await this.fetch('put', `s3/bucket/${type}/objectService/${folderUrl}/func/createFolder`) as FileNode[];
   }
 
-  async downloadObject(type: FileManagerType, objectUrl: string, isFolder: boolean): Promise<any> {
+  async downloadObject(type: FileManagerType, object: FileNode): Promise<any> {
     try {
-      if (type === FileManagerType.PersonalVault) {
-        objectUrl = await this.cryptoService.encryptUrl(objectUrl);
-      }
-
-      const response = await fetch(this.url + `api/s3/bucket/${type}/objects/${objectUrl}`, {
+      this._loading = true;
+      const response = await fetch(this.url + `api/s3/bucket/${type}/objects/${object.encryptedUrl ?? object.url}`, {
         'method' : 'GET',
         'headers' : {
           'Authorization': 'Bearer ' + this.accessToken,
-          'Folder': isFolder ? 'true' : 'false'
+          'Folder': object.isFolder ? 'true' : 'false'
         },
       });
 
@@ -89,15 +92,11 @@ export class S3Service {
         throw new Error('Failed to download file: ' + response.statusText);
       }
 
-      if (type === FileManagerType.PersonalVault) {
-        objectUrl = await this.cryptoService.decryptUrl(objectUrl);
-      }
-
       const blob = await response.blob();
       let url;
 
       if (type === FileManagerType.PersonalVault) {
-        if (!isFolder) {
+        if (!object.isFolder) {
           const buffer = await this.cryptoService.blobToArrayBuffer(blob);
           const decrypted = await this.cryptoService.decrypt(buffer);
           const mimeType = response.headers.get('Content-Type') ?? 'text/plain';
@@ -127,9 +126,7 @@ export class S3Service {
 
       const a = document.createElement('a');
       a.href = url;
-      a.download = isFolder
-        ? objectUrl.slice(0, -1).split('/').pop() as string
-        : objectUrl.split('/').pop() as string;
+      a.download = object.name;
 
       document.body.appendChild(a);
       a.click();
@@ -137,25 +134,23 @@ export class S3Service {
 
       // Clean up the object URL to release resources
       URL.revokeObjectURL(url);
+      this._loading = false;
       return true;
 
     } catch (error) {
+      this._loading = false;
       this.errorHandler(error);
       return null;
     }
   }
 
-  async deleteObject(type: FileManagerType, objectUrl: string, isFolder: boolean): Promise<boolean> {
+  async deleteObject(type: FileManagerType, object: FileNode): Promise<boolean> {
     const options: any = {}
 
-    if (isFolder) {
-      options.body = { isFolder }
+    if (object.isFolder) {
+      options.body = { isFolder: true }
     }
-    if (type === FileManagerType.PersonalVault) {
-      objectUrl = await this.cryptoService.encryptUrl(objectUrl);
-    }
-
-    return await this.fetch('delete', `s3/bucket/${type}/objects/${objectUrl}`, options) as boolean;
+    return await this.fetch('delete', `s3/bucket/${type}/objects/${object.encryptedUrl ?? object.url}`, options) as boolean;
   }
 
   async uploadObject(
@@ -209,6 +204,7 @@ export class S3Service {
 
   private async uploadObjectPart(type: FileManagerType, fileUrl: string, fileContent: any, partNumber: number): Promise<any> {
     try {
+      this._loading = true;
       const response = await fetch(this.url + `api/s3/bucket/${type}/objects/${fileUrl}`, {
         'method' : 'PATCH',
         'headers' : {
@@ -219,9 +215,12 @@ export class S3Service {
         },
         'body': fileContent
       });
+
+      this._loading = false;
       return response.json();
 
     } catch (error) {
+      this._loading = false;
       this.errorHandler(error);
       return null;
     }
@@ -244,13 +243,18 @@ export class S3Service {
   }
 
   private async fetch(method: string, endpoint: string, options: any = {}): Promise<any> {
+    this._loading = true;
     endpoint = this.url + 'api/' + endpoint;
     const headers = options.headers ?? new HttpHeaders();
     options.headers = headers.set('Authorization', 'Bearer ' + this.accessToken);
 
     try {
-      return await lastValueFrom(this.http.request(method, endpoint, options));
+      const res = await lastValueFrom(this.http.request(method, endpoint, options));
+      this._loading = false;
+      return res;
+
     } catch (error) {
+      this._loading = false;
       this.errorHandler(error);
       return null;
     }

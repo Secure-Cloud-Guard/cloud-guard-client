@@ -1,7 +1,7 @@
 
 <div class="relative flex flex-col h-[calc(100vh-100px)] border custom-border-color {{ themeService.theme === Theme.Dark ? 'theme-dark' : 'theme-light' }}">
 
-  @if (!isKeySet()) {
+  @if (!isKeySet() && type === FileManagerType.PersonalVault) {
     <div class="key-not-available">
       <mat-card class="key-card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <mat-card-content>
@@ -37,7 +37,7 @@
         <mat-icon>create_new_folder</mat-icon>
         <span>New folder</span>
       </button>
-      <button mat-button (click)="fileDropRef.click()">
+      <button mat-button (click)="fileDropRef.click()" [disabled]="uploading">
         <mat-icon>cloud_upload</mat-icon>
         <input hidden type="file" #fileDropRef id="fileDropRef" multiple (change)="fileBrowseHandler($event.target)"/>
         <span>Upload Files</span>
@@ -45,6 +45,10 @@
       <button mat-button disabled>
         <mat-icon>sort</mat-icon>
         <span>Sort by</span>
+      </button>
+      <button mat-button *ngIf="type === FileManagerType.PersonalVault" (click)="resetKey()">
+        <mat-icon>vpn_key</mat-icon>
+        <span>Reset Key</span>
       </button>
       <button mat-button (click)="refresh(this.currentPath)">
         <mat-icon>refresh</mat-icon>
@@ -61,7 +65,7 @@
       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="file-tree">
         <mat-tree-node *matTreeNodeDef="let node" [ngClass]="{ 'active-folder': node.active }" (click)="toggleTreeNode(node, $event)" (dblclick)="openTreeNode(node)">
           <mat-icon class="object-icon">folder</mat-icon>
-          {{node.name}}
+          <span class="folder-tree-name">{{node.name}}</span>
         </mat-tree-node>
         <!-- This is the tree node template for expandable nodes -->
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
@@ -70,7 +74,7 @@
               {{node?.expanded ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
             <mat-icon class="object-icon">folder</mat-icon>
-            {{node.name}}
+            <span class="folder-tree-name">{{node.name}}</span>
           </div>
           <!-- There is inline padding applied to this div using styles. -->
           <div [class.file-tree-invisible]="!node?.expanded" role="group">
@@ -86,6 +90,7 @@
           <mat-icon>arrow_back</mat-icon>
         </button>
         <div class="flex items-center">
+          <mat-spinner *ngIf="loading()" class="mr-2" [diameter]="25" [color]="themeColorService.getPrimaryColor()"></mat-spinner>
           <span class="text-secondary-color text-[13px] mr-2">Path: </span>
           @for (folderName of this.currentPath; track $index) {
             <mat-icon class="text-[13px]" *ngIf="$index !== 0">arrow_forward_ios</mat-icon>
@@ -96,16 +101,23 @@
           <mat-icon>search</mat-icon>
         </button>
       </div>
-      <div class="file-list-wrap file-manager-dropzone" (contextmenu)="openFileManagerMenu($event)">
+      <div class="file-list-wrap file-manager-dropzone-{{ type }}" (contextmenu)="openFileManagerMenu($event)">
         <div class="dnd-area">
-          <mat-icon class="no-drag">cloud_upload</mat-icon>
-          <h2 class="no-drag">Drag and drop files here</h2>
+          @if (!this.uploading) {
+            <mat-icon class="no-drag">cloud_upload</mat-icon>
+            <h2 class="no-drag">Drag and drop files here</h2>
+          } @else {
+            <mat-icon class="no-drag wait">access_time</mat-icon>
+            <h2 class="no-drag wait">Wait for the uploading to be finished</h2>
+          }
         </div>
         @if (viewMode === VIEW_MODE.MODULE) {
           <div class="file-list">
             @for (file of currentFolderFiles; track file.name) {
               <div class="folder-wrap" (dblclick)="openFromList(file)" (contextmenu)="openFileMenu($event, file)">
-                @if (file.isFolder) {
+                @if (type === FileManagerType.Storage && file.isFolder && file.shared) {
+                  <mat-icon class="object-icon shared">folder_shared</mat-icon>
+                } @else if (file.isFolder) {
                   <mat-icon class="object-icon">folder</mat-icon>
                 } @else if (file.isImage) {
                   @if (file.imageBase64) {
@@ -133,6 +145,16 @@
                   <div class="flex items-center justify-center">
                     @if (element.isFolder) {
                       <mat-icon class="object-icon">folder</mat-icon>
+                    } @else if (element.isImage) {
+                      @if (element.imageBase64) {
+                        <div class="image-preview-wrap">
+                          <div class="image-preview">
+                            <img src="data:image/png;base64, {{ element.imageBase64 }}" alt="Image Preview"/>
+                          </div>
+                        </div>
+                      } @else {
+                        <mat-icon class="object-icon custom-file-icon" svgIcon="image"></mat-icon>
+                      }
                     } @else {
                       <mat-icon class="object-icon custom-file-icon" svgIcon="{{ getSvgIcon(element) }}"></mat-icon>
                     }
@@ -219,6 +241,10 @@
       <mat-icon>sort</mat-icon>
       <span>Sort by</span>
     </button>
+    <button mat-button *ngIf="type === FileManagerType.PersonalVault" (click)="resetKey()">
+      <mat-icon>vpn_key</mat-icon>
+      <span>Reset Key</span>
+    </button>
     <button mat-button (click)="refresh(this.currentPath)">
       <mat-icon>refresh</mat-icon>
       <span>Refresh</span>
@@ -238,6 +264,12 @@
         <mat-icon>cloud_download</mat-icon>
         <span>Download</span>
       </button>
+      @if (type === FileManagerType.Storage && item.isFolder) {
+        <button mat-button (click)="sharingDialog(item)">
+          <mat-icon>share</mat-icon>
+          <span>Sharing</span>
+        </button>
+      }
       <button mat-button (click)="deleteObject(item)">
         <mat-icon>delete</mat-icon>
         <span>Delete</span>

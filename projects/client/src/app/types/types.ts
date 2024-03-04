@@ -9,10 +9,12 @@ export interface FileNode {
   lastModified: string;
   children?: FileNode[];
   isFolder: boolean;
+  shared?: boolean;
   isImage?: boolean;
   imageBase64?: string;
   active?: boolean;
   expanded?: boolean;
+  encryptedUrl?: string;
 }
 
 /**

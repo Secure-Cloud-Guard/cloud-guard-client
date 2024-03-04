@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CognitoService } from "../../../../shared";
+import {AlertService, CognitoService} from "../../../../shared";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,7 @@ export class CryptoService {
 
   constructor(
     private cognitoService: CognitoService,
+    private alertService: AlertService,
   ) {
     this.cognitoService.currentUserId().then(userId => {
       this.userId = userId;
@@ -32,15 +33,20 @@ export class CryptoService {
   }
 
   async decrypt(encryptedData: ArrayBuffer): Promise<ArrayBuffer> {
-    const key = await this.getKey();
-    return await window.crypto.subtle.decrypt(
-      {
-        name: 'AES-GCM',
-        iv: this.CLOUD_GUARD_IV,
-      },
-      key,
-      encryptedData
-    );
+    try {
+      const key = await this.getKey();
+      return await window.crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: this.CLOUD_GUARD_IV,
+        },
+        key,
+        encryptedData
+      );
+    } catch (e) {
+      this.alertService.error('Data decryption error occurred. You probably need to provide the correct key.');
+      return encryptedData;
+    }
   }
 
   async encryptName(name: string): Promise<string> {
@@ -59,18 +65,26 @@ export class CryptoService {
   }
 
   async decryptName(encryptedName: string): Promise<string> {
-    const key = await this.getKey();
-    const encryptedData = this.base64ToArrayBuffer(encryptedName, true);
-    const decryptedData = await window.crypto.subtle.decrypt(
-      {
-        name: 'AES-GCM',
-        iv: this.CLOUD_GUARD_IV,
-      },
-      key,
-      encryptedData
-    );
-    const decoder = new TextDecoder();
-    return decoder.decode(decryptedData);
+    try {
+      const key = await this.getKey();
+      const encryptedData = this.base64ToArrayBuffer(encryptedName, true);
+
+      const decryptedData = await window.crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          iv: this.CLOUD_GUARD_IV,
+        },
+        key,
+        encryptedData
+      );
+
+      const decoder = new TextDecoder();
+      return decoder.decode(decryptedData);
+
+    } catch (e) {
+      this.alertService.error('Data decryption error occurred. You probably need to provide the correct key.');
+      return encryptedName;
+    }
   }
 
   async encryptUrl(url: string): Promise<string> {
@@ -90,14 +104,20 @@ export class CryptoService {
   }
 
   async getKey(): Promise<CryptoKey> {
-    const keyString = localStorage.getItem(this.getLocalstorageKey());
+    try {
+      const keyString = localStorage.getItem(this.getLocalstorageKey());
 
-    if (!keyString) {
-      throw new Error('Key not found in localStorage');
+      if (!keyString) {
+        throw new Error('Key not found in localStorage');
+      }
+
+      const keyArray = this.hexStringToArrayBuffer(keyString);
+      return await this.importKey(keyArray);
+
+    } catch (e) {
+      console.log('Get key error: ', e);
+      throw e;
     }
-
-    const keyArray = this.hexStringToArrayBuffer(keyString);
-    return await this.importKey(keyArray);
   }
 
   async generateKey(): Promise<void> {
@@ -206,18 +226,27 @@ export class CryptoService {
     return key !== null;
   }
 
+  public removeLocalstorageKey() {
+    localStorage.removeItem(this.getLocalstorageKey());
+  }
+
   private getLocalstorageKey(): string {
     return this.userId + '.CloudGuardKey';
   }
 
   private async importKey(keyArray: Uint8Array): Promise<CryptoKey> {
-    return await window.crypto.subtle.importKey(
-      'raw',
-      keyArray,
-      {name: 'AES-GCM'},
-      true,
-      ['encrypt', 'decrypt']
-    );
+    try {
+      return await window.crypto.subtle.importKey(
+        'raw',
+        keyArray,
+        {name: 'AES-GCM'},
+        true,
+        ['encrypt', 'decrypt']
+      );
+    } catch (e) {
+      console.log('Import key error: ', e);
+      throw e;
+    }
   }
 
   private arrayBufferToHexString(buffer: Uint8Array): string {

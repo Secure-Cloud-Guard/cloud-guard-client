@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTreeModule, MatTreeNestedDataSource } from "@angular/material/tree";
 import { NestedTreeControl } from "@angular/cdk/tree";
@@ -19,15 +19,17 @@ import { FileManagerType, FileNode, VIEW_MODE } from "@types";
 import { AlertService, CognitoService, Theme, ThemeColorService, ThemeService } from "@globalShared";
 import { S3Service } from "@services";
 import { CryptoService } from "@app/services/crypto.service";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import {MatListModule} from "@angular/material/list";
 
 @Component({
   selector: 'app-file-manager',
   standalone: true,
-  imports: [CommonModule, MatTreeModule, MatIconModule, MatButtonModule, MatTooltipModule, MatInputModule, MatCardModule, MatTableModule, NgxFilesizeModule, MatMenuModule, MatProgressBarModule],
+  imports: [CommonModule, MatTreeModule, MatIconModule, MatButtonModule, MatTooltipModule, MatInputModule, MatCardModule, MatTableModule, NgxFilesizeModule, MatMenuModule, MatProgressBarModule, MatProgressSpinnerModule],
   templateUrl: './file-manager.component.html',
   styleUrl: './file-manager.component.scss'
 })
-export class FileManagerComponent implements AfterViewInit {
+export class FileManagerComponent implements AfterViewInit, OnInit {
   @Input() type: FileManagerType = FileManagerType.Storage;
 
   @ViewChild('clickFileManagerTrigger') clickFileManagerTrigger: MatMenuTrigger | undefined;
@@ -37,6 +39,7 @@ export class FileManagerComponent implements AfterViewInit {
 
   protected readonly Theme = Theme;
   protected readonly VIEW_MODE = VIEW_MODE;
+  protected readonly FileManagerType = FileManagerType;
   viewMode: string = VIEW_MODE.MODULE;
   currentPath: string[] = [];
   private pendingTreeClick: any;
@@ -46,6 +49,7 @@ export class FileManagerComponent implements AfterViewInit {
   private fileTree: FileNode[] = [];
   currentFolderFiles: FileNode[] = [];
   uploadingFiles: any[] = [];
+  uploading: boolean = false;
   showUploading: boolean = false;
 
   constructor(
@@ -86,7 +90,9 @@ export class FileManagerComponent implements AfterViewInit {
     });
 
     this.viewMode = localStorage.getItem('fileManagerViewMode') === VIEW_MODE.MODULE ? VIEW_MODE.MODULE : VIEW_MODE.LIST;
+  }
 
+  ngOnInit() {
     this.cognitoService.getAccessToken().then(accessToken => {
       if (accessToken) {
         this.refresh();
@@ -104,6 +110,10 @@ export class FileManagerComponent implements AfterViewInit {
     this.currentPath = currentPath ?? ['/'];
     this.currentFolderFiles = this.currentFolderContent();
     this.updateActiveFolder();
+  }
+
+  loading(): boolean {
+    return this.s3Service.loading;
   }
 
   openFileManagerMenu(event: MouseEvent) {
@@ -128,14 +138,14 @@ export class FileManagerComponent implements AfterViewInit {
   }
 
   async download(object: FileNode) {
-    const res = await this.s3Service.downloadObject(this.type, object.url, object.isFolder);
+    const res = await this.s3Service.downloadObject(this.type, object);
     if (res) {
       this.alertService.success(`The ${object.name} successfully downloaded`);
     }
   }
 
   async deleteObject(object: FileNode) {
-    const res = await this.s3Service.deleteObject(this.type, object.url, object.isFolder);
+    const res = await this.s3Service.deleteObject(this.type, object);
     if (res) {
       this.alertService.success(`The ${object.name} successfully deleted`);
       this.refresh(this.currentPath);
@@ -194,10 +204,20 @@ export class FileManagerComponent implements AfterViewInit {
     });
 
     // Set image preview
-    currentFolder?.forEach(async file => {
-      if (['jpg', 'jpeg', 'png'].includes(this.getType(file))) {
-        file.isImage = true;
-        file.imageBase64 = await this.s3Service.getImagePreview(this.type, file.url);
+    let images: { [key: string]: string } = {};
+
+    Promise.all(
+      currentFolder.map(async file => {
+        if (['jpg', 'jpeg', 'png'].includes(this.getType(file))) {
+          images[file.url] = await this.s3Service.getImagePreview(this.type, file.url);
+        }
+      })
+    ).then(() => {
+      for (const file of currentFolder) {
+        if (['jpg', 'jpeg', 'png'].includes(this.getType(file))) {
+          file.isImage = true;
+          file.imageBase64 = images[file.url];
+        }
       }
     });
 
@@ -321,7 +341,7 @@ export class FileManagerComponent implements AfterViewInit {
   }
 
   private initDropzone(): void {
-    let dropzone = document.querySelector('.file-manager-dropzone');
+    let dropzone = document.querySelector('.file-manager-dropzone-' + this.type);
     let dndArea = dropzone?.querySelector('.dnd-area');
 
     dropzone?.addEventListener('dragenter', this.onDragenter.bind(this), false)
@@ -332,7 +352,7 @@ export class FileManagerComponent implements AfterViewInit {
 
   private onDragenter(event: Event): void {
     event.preventDefault();
-    let dropzone = document.querySelector('.file-manager-dropzone');
+    let dropzone = document.querySelector('.file-manager-dropzone-' + this.type);
     dropzone?.classList.add('fileover');
   }
 
@@ -342,17 +362,19 @@ export class FileManagerComponent implements AfterViewInit {
 
   private onDragleave(event: Event): void {
     event.preventDefault();
-    let dropzone = document.querySelector('.file-manager-dropzone');
+    let dropzone = document.querySelector('.file-manager-dropzone-' + this.type);
     dropzone?.classList.remove('fileover');
   }
 
   private onDrop(event: Event): void {
     event.preventDefault();
-    let dropzone = document.querySelector('.file-manager-dropzone');
+    let dropzone = document.querySelector('.file-manager-dropzone-' + this.type);
     dropzone?.classList.remove('fileover');
 
-    const files = (event as DragEvent).dataTransfer?.files;
-    this.uploadFiles(files);
+    if (!this.uploading) {
+      const files = (event as DragEvent).dataTransfer?.files;
+      this.uploadFiles(files);
+    }
   }
 
   fileBrowseHandler(target: any) {
@@ -376,8 +398,10 @@ export class FileManagerComponent implements AfterViewInit {
   }
 
   private uploadFiles(files: any) {
+    this.uploading = true;
     this.showUploading = true;
     this.uploadingFiles = files;
+    let path = [...this.currentPath];
     let currentIndex = 0;
 
     const readFile = (index: number) => {
@@ -388,7 +412,7 @@ export class FileManagerComponent implements AfterViewInit {
         fileReader.onload = async (event) => {
           await this.s3Service.uploadObject(
             this.type,
-            this.generateObjectUrl(this.uploadingFiles[index].name),
+            this.generateObjectUrl(this.uploadingFiles[index].name, path),
             event?.target?.result as ArrayBuffer,
             () => {
               this.uploadingFiles[index].progress = 0;
@@ -411,6 +435,7 @@ export class FileManagerComponent implements AfterViewInit {
         fileReader.readAsArrayBuffer(this.uploadingFiles[index]);
       } else {
         this.refresh(this.currentPath);
+        this.uploading = false;
         this.showUploading = false;
       }
     };
@@ -418,8 +443,8 @@ export class FileManagerComponent implements AfterViewInit {
     readFile(currentIndex);
   }
 
-  private generateObjectUrl(fileName: string): string {
-    const currentPath = this.currentPath.slice(1).join('/');
+  private generateObjectUrl(fileName: string, path: string[]): string {
+    const currentPath = path.slice(1).join('/');
     return currentPath.length > 0
       ? currentPath + '/' + fileName
       : fileName;
@@ -429,7 +454,7 @@ export class FileManagerComponent implements AfterViewInit {
     const dialogRef = this.dialog.open(CreateFolderDialog, {
       data: {
         type: this.type,
-        baseUrl: this.generateObjectUrl('')
+        baseUrl: this.generateObjectUrl('', this.currentPath)
       }
     });
 
@@ -441,7 +466,7 @@ export class FileManagerComponent implements AfterViewInit {
   }
 
   isKeySet(): boolean {
-    return this.cryptoService.isKeySet() && this.type === FileManagerType.PersonalVault;
+    return this.cryptoService.isKeySet();
   }
 
   async generateKey() {
@@ -455,6 +480,22 @@ export class FileManagerComponent implements AfterViewInit {
       await this.refresh();
     }
   }
+
+  resetKey() {
+    this.cryptoService.removeLocalstorageKey();
+  }
+
+  sharingDialog(object: FileNode) {
+    const dialogRef = this.dialog.open(ShareFolderDialog, {
+      data: { object }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.refresh(this.currentPath);
+      }
+    });
+  }
 }
 
 @Component({
@@ -464,9 +505,9 @@ export class FileManagerComponent implements AfterViewInit {
   template: `
     <h2 mat-dialog-title>Create New Folder</h2>
     <mat-dialog-content class="mat-typography">
-      <mat-form-field [color]="themeColorService.getPrimaryColor()">
-        <mat-label>Folder Name</mat-label>
-        <input matInput [(ngModel)]="folderName">
+      <mat-label class="text-[15px] mb-2 block">Folder Name</mat-label>
+      <mat-form-field class="custom-input" [color]="themeColorService.getPrimaryColor()">
+        <input matInput [(ngModel)]="folderName" placeholder="name">
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -490,6 +531,74 @@ export class CreateFolderDialog {
     const res = await this.s3Service.createFolder(this.data.type, this.data.baseUrl + this.folderName);
     if (res) {
       this.alertService.success(`The folder ${this.folderName} successfully created`);
+    }
+    this.dialogRef.close(true);
+  }
+}
+
+@Component({
+  selector: 'share-folder-dialog',
+  standalone: true,
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule, MatDialogClose, MatFormFieldModule, MatInputModule, FormsModule, MatTooltipModule, MatIconModule, MatListModule],
+  template: `
+    <h2 mat-dialog-title>Sharing Settings</h2>
+    <mat-dialog-content class="mat-typography !pb-0">
+      <mat-label class="text-[15px] !my-2 block">Share with User:</mat-label>
+      <div class="flex gap-2 items-start">
+        <mat-form-field class="custom-input !min-w-[300px]" [color]="themeColorService.getPrimaryColor()">
+          <input matInput [(ngModel)]="userEmail" placeholder="User Email">
+        </mat-form-field>
+        <button class="custom-icon-btn medium square" mat-icon-button (click)="addUser()" matTooltip="Add User" matTooltipPosition="above">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      </div>
+      <mat-list class="!pb-0">
+        <div mat-subheader class="text-[15px] mt-0">Emails:</div>
+        @for (email of shareWith; track email) {
+          <mat-list-item class="!h-[40px]">
+            <mat-icon matListItemIcon>alternate_email</mat-icon>
+            <div matListItemTitle class="flex items-center justify-between">
+              {{ email }}
+              <mat-icon class="cursor-pointer !w-4 !h-4 !text-[16px]" (click)="removeUser(email)" matTooltip="Remove User" matTooltipPosition="above">remove_circle_outline</mat-icon>
+            </div>
+          </mat-list-item>
+        }
+        <mat-divider class="!mt-2"></mat-divider>
+      </mat-list>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button (click)="save()" [color]="themeColorService.getPrimaryColor()">Save</button>
+    </mat-dialog-actions>
+  `
+})
+export class ShareFolderDialog {
+  userEmail: string = ''
+  shareWith: string[] = [];
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { object: FileNode },
+    public dialogRef: MatDialogRef<ShareFolderDialog>,
+    public themeColorService: ThemeColorService,
+    private s3Service: S3Service,
+    private alertService: AlertService,
+  ) {}
+
+  addUser() {
+    if (this.userEmail.length > 0) {
+      this.shareWith.push(this.userEmail);
+      this.userEmail = '';
+    }
+  }
+
+  removeUser(email: string) {
+    this.shareWith = this.shareWith.filter(userEmail => userEmail !== email);
+  }
+
+  async save() {
+    const res = true;
+    if (res) {
+      this.alertService.success(`The folder ${this.data.object.name} successfully shared`);
     }
     this.dialogRef.close(true);
   }

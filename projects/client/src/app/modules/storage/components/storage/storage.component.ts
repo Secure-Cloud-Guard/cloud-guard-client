@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {FileManagerType} from "@types";
 
 @Component({
   selector: 'app-storage',
@@ -6,4 +7,5 @@ import { Component } from '@angular/core';
 })
 export class StorageComponent {
 
+    protected readonly FileManagerType = FileManagerType;
 }
