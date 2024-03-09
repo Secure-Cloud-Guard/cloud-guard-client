@@ -12,7 +12,7 @@ import { CryptoService } from "@app/services/crypto.service";
 @Injectable({
   providedIn: 'root'
 })
-export class S3Service {
+export class CloudService {
   private url: string = environment.serverUrl;
   private accessToken: string = '';
   private _loading: boolean = false;
@@ -56,11 +56,16 @@ export class S3Service {
     return objects;
   }
 
-  async getImagePreview(type: FileManagerType, imageUrl: string): Promise<string> {
+  async getImagePreview(type: FileManagerType, image: FileNode): Promise<string> {
+    let imageUrl = image.url;
     if (type === FileManagerType.PersonalVault) {
       imageUrl = await this.cryptoService.encryptUrl(imageUrl);
     }
-    const base64Image = await this.fetch('get', `s3/bucket/${type}/objectService/${imageUrl}/func/image`) as string;
+    const base64Image = await this.fetch('get', `s3/bucket/${type}/objectService/${imageUrl}/func/image`, {
+      headers: new HttpHeaders()
+        .set('owner', image.owner ? 'true' : 'false')
+        .set('ownerid', image.ownerId)
+    }) as string;
 
     if (type === FileManagerType.PersonalVault) {
       const buffer = this.cryptoService.base64ToArrayBuffer(base64Image);
@@ -84,7 +89,9 @@ export class S3Service {
         'method' : 'GET',
         'headers' : {
           'Authorization': 'Bearer ' + this.accessToken,
-          'Folder': object.isFolder ? 'true' : 'false'
+          'Folder': object.isFolder ? 'true' : 'false',
+          'owner': object.owner ? 'true' : 'false',
+          'ownerid': object.ownerId,
         },
       });
 
@@ -151,6 +158,13 @@ export class S3Service {
       options.body = { isFolder: true }
     }
     return await this.fetch('delete', `s3/bucket/${type}/objects/${object.encryptedUrl ?? object.url}`, options) as boolean;
+  }
+
+  async shareFolder(type: FileManagerType, folder: FileNode, userEmails: string[]): Promise<boolean> {
+    const folderUrl = (folder.encryptedUrl ?? folder.url).slice(0, -1);
+    return await this.fetch('post', `s3/bucket/${type}/objectService/${folderUrl}/func/shareFolder`, {
+      body: { userEmails }
+    }) as boolean;
   }
 
   async uploadObject(

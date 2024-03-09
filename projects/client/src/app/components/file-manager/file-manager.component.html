@@ -33,15 +33,17 @@
 
   <div class="flex items-center justify-between h-11 px-3 py-1 border-b custom-border-color">
     <div class="flex items-center gap-1 header-buttons">
-      <button mat-button (click)="createFolderDialog()">
-        <mat-icon>create_new_folder</mat-icon>
-        <span>New folder</span>
-      </button>
-      <button mat-button (click)="fileDropRef.click()" [disabled]="uploading">
-        <mat-icon>cloud_upload</mat-icon>
-        <input hidden type="file" #fileDropRef id="fileDropRef" multiple (change)="fileBrowseHandler($event.target)"/>
-        <span>Upload Files</span>
-      </button>
+      <input hidden type="file" #fileDropRef id="fileDropRef" multiple (change)="fileBrowseHandler($event.target)"/>
+      @if (type === FileManagerType.PersonalVault || (type === FileManagerType.Storage && this.currentFolder?.owner)) {
+        <button mat-button (click)="createFolderDialog()">
+          <mat-icon>create_new_folder</mat-icon>
+          <span>New folder</span>
+        </button>
+        <button mat-button (click)="fileDropRef.click()" [disabled]="uploading">
+          <mat-icon>cloud_upload</mat-icon>
+          <span>Upload Files</span>
+        </button>
+      }
       <button mat-button disabled>
         <mat-icon>sort</mat-icon>
         <span>Sort by</span>
@@ -64,7 +66,11 @@
     <div class="flex overflow-y-auto min-w-[25%]">
       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="file-tree">
         <mat-tree-node *matTreeNodeDef="let node" [ngClass]="{ 'active-folder': node.active }" (click)="toggleTreeNode(node, $event)" (dblclick)="openTreeNode(node)">
-          <mat-icon class="object-icon">folder</mat-icon>
+          @if (type === FileManagerType.Storage && node.sharing?.shared) {
+            <mat-icon class="object-icon shared">folder_shared</mat-icon>
+          } @else {
+            <mat-icon class="object-icon">folder</mat-icon>
+          }
           <span class="folder-tree-name">{{node.name}}</span>
         </mat-tree-node>
         <!-- This is the tree node template for expandable nodes -->
@@ -73,7 +79,11 @@
             <mat-icon class="expand-icon mat-icon-rtl-mirror">
               {{node?.expanded ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
-            <mat-icon class="object-icon">folder</mat-icon>
+            @if (type === FileManagerType.Storage && node.sharing?.shared) {
+              <mat-icon class="object-icon shared">folder_shared</mat-icon>
+            } @else {
+              <mat-icon class="object-icon">folder</mat-icon>
+            }
             <span class="folder-tree-name">{{node.name}}</span>
           </div>
           <!-- There is inline padding applied to this div using styles. -->
@@ -115,7 +125,7 @@
           <div class="file-list">
             @for (file of currentFolderFiles; track file.name) {
               <div class="folder-wrap" (dblclick)="openFromList(file)" (contextmenu)="openFileMenu($event, file)">
-                @if (type === FileManagerType.Storage && file.isFolder && file.shared) {
+                @if (type === FileManagerType.Storage && file.isFolder && file.sharing?.shared) {
                   <mat-icon class="object-icon shared">folder_shared</mat-icon>
                 } @else if (file.isFolder) {
                   <mat-icon class="object-icon">folder</mat-icon>
@@ -143,7 +153,9 @@
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell class="w-[50px] p-0" *matCellDef="let element">
                   <div class="flex items-center justify-center">
-                    @if (element.isFolder) {
+                    @if (type === FileManagerType.Storage && element.isFolder && element.sharing?.shared) {
+                      <mat-icon class="object-icon shared">folder_shared</mat-icon>
+                    } @else if (element.isFolder) {
                       <mat-icon class="object-icon">folder</mat-icon>
                     } @else if (element.isImage) {
                       @if (element.imageBase64) {
@@ -228,28 +240,32 @@
      #clickFileManagerTrigger="matMenuTrigger"
      [matMenuTriggerFor]="clickFileManagerMenu"></div>
 <mat-menu #clickFileManagerMenu="matMenu">
-  <div class="flex flex-col items-baseline px-3 text-[14px]">
-    <button mat-button (click)="createFolderDialog()">
-      <mat-icon>create_new_folder</mat-icon>
-      <span>New folder</span>
-    </button>
-    <button mat-button (click)="fileDropRef.click()">
-      <mat-icon>cloud_upload</mat-icon>
-      <span>Upload Files</span>
-    </button>
-    <button mat-button disabled>
-      <mat-icon>sort</mat-icon>
-      <span>Sort by</span>
-    </button>
-    <button mat-button *ngIf="type === FileManagerType.PersonalVault" (click)="resetKey()">
-      <mat-icon>vpn_key</mat-icon>
-      <span>Reset Key</span>
-    </button>
-    <button mat-button (click)="refresh(this.currentPath)">
-      <mat-icon>refresh</mat-icon>
-      <span>Refresh</span>
-    </button>
-  </div>
+  <ng-template matMenuContent let-folder="folder">
+    <div class="flex flex-col items-baseline px-3 text-[14px]">
+      @if (type === FileManagerType.PersonalVault || (type === FileManagerType.Storage && folder.owner)) {
+        <button mat-button (click)="createFolderDialog()">
+          <mat-icon>create_new_folder</mat-icon>
+          <span>New folder</span>
+        </button>
+        <button mat-button (click)="fileDropRef.click()">
+          <mat-icon>cloud_upload</mat-icon>
+          <span>Upload Files</span>
+        </button>
+      }
+      <button mat-button disabled>
+        <mat-icon>sort</mat-icon>
+        <span>Sort by</span>
+      </button>
+      <button mat-button *ngIf="type === FileManagerType.PersonalVault" (click)="resetKey()">
+        <mat-icon>vpn_key</mat-icon>
+        <span>Reset Key</span>
+      </button>
+      <button mat-button (click)="refresh(this.currentPath)">
+        <mat-icon>refresh</mat-icon>
+        <span>Refresh</span>
+      </button>
+    </div>
+  </ng-template>
 </mat-menu>
 
 <div style="visibility: hidden; position: fixed;"
@@ -260,20 +276,30 @@
 <mat-menu #clickFileMenu="matMenu">
   <ng-template matMenuContent let-item="item">
     <div class="flex flex-col items-baseline px-3 text-[14px]">
-      <button mat-button (click)="download(item)">
-        <mat-icon>cloud_download</mat-icon>
-        <span>Download</span>
-      </button>
-      @if (type === FileManagerType.Storage && item.isFolder) {
+      @if (item.isFolder) {
+        <button mat-button (click)="openFromList(item)">
+          <mat-icon>folder_open</mat-icon>
+          <span>Open</span>
+        </button>
+      }
+      @if (type === FileManagerType.PersonalVault || (type === FileManagerType.Storage && !item.shadowFolder)) {
+        <button mat-button (click)="download(item)">
+          <mat-icon>cloud_download</mat-icon>
+          <span>Download</span>
+        </button>
+      }
+      @if (type === FileManagerType.Storage && item.isFolder && item.owner) {
         <button mat-button (click)="sharingDialog(item)">
           <mat-icon>share</mat-icon>
           <span>Sharing</span>
         </button>
       }
-      <button mat-button (click)="deleteObject(item)">
-        <mat-icon>delete</mat-icon>
-        <span>Delete</span>
-      </button>
+      @if (type === FileManagerType.PersonalVault || (type === FileManagerType.Storage && item.owner)) {
+        <button mat-button (click)="deleteObject(item)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      }
     </div>
   </ng-template>
 </mat-menu>

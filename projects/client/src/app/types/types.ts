@@ -7,14 +7,33 @@ export interface FileNode {
   url: string;
   size: number;
   lastModified: string;
+  ownerId: string,
+  owner: boolean,
   children?: FileNode[];
   isFolder: boolean;
-  shared?: boolean;
+  shadowFolder?: boolean,
+  sharing?: BucketObjectSharing;
   isImage?: boolean;
   imageBase64?: string;
   active?: boolean;
   expanded?: boolean;
   encryptedUrl?: string;
+}
+
+export interface BucketObjectSharing {
+  shared: boolean,
+  shareWith?: ShareWithUser[],
+}
+
+export interface ShareWithUser {
+  userId: string,
+  userEmail: string,
+  rights: AccessRights,
+}
+
+export enum AccessRights {
+  Read = 'read',
+  Write = 'write',
 }
 
 /**
