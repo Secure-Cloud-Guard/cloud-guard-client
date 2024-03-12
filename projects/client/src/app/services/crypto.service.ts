@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import {AlertService, CognitoService} from "../../../../shared";
+import { AlertService, CognitoService } from "../../../../shared";
+import { environment } from "../../../../../src/environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -7,9 +8,8 @@ import {AlertService, CognitoService} from "../../../../shared";
 export class CryptoService {
 
   private userId: string = ''
-  private CLOUD_GUARD_IV: Uint8Array = new Uint8Array([
-    170, 76, 229, 143, 38, 62, 88, 218, 4, 172, 169, 60
-  ]);
+  private readonly iv: Uint8Array;
+  private readonly algorithm: string = 'AES-GCM';
 
   constructor(
     private cognitoService: CognitoService,
@@ -18,14 +18,19 @@ export class CryptoService {
     this.cognitoService.currentUserId().then(userId => {
       this.userId = userId;
     });
+
+    const decodedIv = atob(environment.cloudGuardBase64Iv);
+    const decodedIvArray = decodedIv.split('').map(char => char.charCodeAt(0));
+
+    this.iv = new Uint8Array(decodedIvArray);
   }
 
   async encrypt(data: ArrayBuffer): Promise<ArrayBuffer> {
     const key = await this.getKey();
     return await window.crypto.subtle.encrypt(
       {
-        name: 'AES-GCM',
-        iv: this.CLOUD_GUARD_IV,
+        name: this.algorithm,
+        iv: this.iv,
       },
       key,
       data
@@ -37,8 +42,8 @@ export class CryptoService {
       const key = await this.getKey();
       return await window.crypto.subtle.decrypt(
         {
-          name: 'AES-GCM',
-          iv: this.CLOUD_GUARD_IV,
+          name: this.algorithm,
+          iv: this.iv,
         },
         key,
         encryptedData
@@ -55,8 +60,8 @@ export class CryptoService {
     const data = encoder.encode(name);
     const encryptedData = await window.crypto.subtle.encrypt(
       {
-        name: 'AES-GCM',
-        iv: this.CLOUD_GUARD_IV,
+        name: this.algorithm,
+        iv: this.iv,
       },
       key,
       data
@@ -71,8 +76,8 @@ export class CryptoService {
 
       const decryptedData = await window.crypto.subtle.decrypt(
         {
-          name: 'AES-GCM',
-          iv: this.CLOUD_GUARD_IV,
+          name: this.algorithm,
+          iv: this.iv,
         },
         key,
         encryptedData
@@ -123,7 +128,7 @@ export class CryptoService {
   async generateKey(): Promise<void> {
     const key = await window.crypto.subtle.generateKey(
       {
-        name: 'AES-GCM',
+        name: this.algorithm,
         length: 256
       },
       true,
@@ -239,7 +244,7 @@ export class CryptoService {
       return await window.crypto.subtle.importKey(
         'raw',
         keyArray,
-        {name: 'AES-GCM'},
+        {name: this.algorithm},
         true,
         ['encrypt', 'decrypt']
       );

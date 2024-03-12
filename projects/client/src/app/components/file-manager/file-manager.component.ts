@@ -187,12 +187,12 @@ export class FileManagerComponent implements AfterViewInit, OnInit {
   private getFolderTree(data: FileNode[]): FileNode[] {
     const copiedData: FileNode[] = JSON.parse(JSON.stringify(data));
 
-    function traverseFilter(node: FileNode): boolean {
+    const traverseFilter = (node: FileNode): boolean => {
       if (!node.isFolder) {
         return false;
       }
       if (node.children) {
-        node.children = node.children.filter(child => traverseFilter(child));
+        node.children = this.sortObjects(node.children).filter(child => traverseFilter(child));
       }
       return true;
     }
@@ -243,8 +243,18 @@ export class FileManagerComponent implements AfterViewInit, OnInit {
       }
     });
 
-    // Sort objects from currentFolderContent: folders first, then files
-    currentFolderContent?.sort((a, b) => {
+    return this.sortObjects(currentFolderContent);
+  }
+
+  private sortObjects(objects: FileNode[]) {
+    return objects?.sort((a, b) => {
+      // First, sort by shadowFolder
+      if (a.shadowFolder && !b.shadowFolder) {
+        return -1;
+      } else if (!a.shadowFolder && b.shadowFolder) {
+        return 1;
+      }
+      // folders first, then files
       if (a.isFolder && !b.isFolder) {
         return -1;
       } else if (!a.isFolder && b.isFolder) {
@@ -253,8 +263,6 @@ export class FileManagerComponent implements AfterViewInit, OnInit {
         return 0;
       }
     });
-
-    return currentFolderContent;
   }
 
   openFromList(file: FileNode) {
@@ -377,8 +385,11 @@ export class FileManagerComponent implements AfterViewInit, OnInit {
 
   private onDragenter(event: Event): void {
     event.preventDefault();
-    let dropzone = document.querySelector('.file-manager-dropzone-' + this.type);
-    dropzone?.classList.add('fileover');
+
+    if (this.currentFolder?.owner) {
+      let dropzone = document.querySelector('.file-manager-dropzone-' + this.type);
+      dropzone?.classList.add('fileover');
+    }
   }
 
   private onDragover(event: Event): void {
@@ -398,6 +409,18 @@ export class FileManagerComponent implements AfterViewInit, OnInit {
 
     if (!this.uploading) {
       const files = (event as DragEvent).dataTransfer?.files;
+      const items = (event as DragEvent).dataTransfer?.items;
+
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          const entry = items[i].webkitGetAsEntry();
+          if (entry && entry.isDirectory) {
+            this.alertService.error('The folder cannot be uploaded');
+            return;
+          }
+        }
+      }
+
       this.uploadFiles(files);
     }
   }
