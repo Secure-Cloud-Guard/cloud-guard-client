@@ -8,6 +8,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
       COGNITO_USER_POOL_CLIENT_ID: ${{ secrets.COGNITO_USER_POOL_CLIENT_ID }}
+      CLOUD_GUARD_BASE64_IV: ${{ secrets.CLOUD_GUARD_BASE64_IV }}
     steps:
       - uses: actions/checkout@v3
 
