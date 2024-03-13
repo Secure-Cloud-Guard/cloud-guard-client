@@ -19,8 +19,6 @@ export class CryptoService {
       this.userId = userId;
     });
 
-    console.log('environment.cloudGuardBase64Iv: ', environment.cloudGuardBase64Iv);
-
     const decodedIv = atob(environment.cloudGuardBase64Iv);
     const decodedIvArray = decodedIv.split('').map(char => char.charCodeAt(0));
 

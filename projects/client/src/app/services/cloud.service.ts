@@ -250,13 +250,21 @@ export class CloudService {
     }
 
     if (error.status === StatusCodes.UNAUTHORIZED) {
-      if (!window.location.href.startsWith(environment.authAppUrl)) {
-        window.location.href = environment.authAppUrl;
-      }
+      // if (!window.location.href.startsWith(environment.authAppUrl)) {
+      //   window.location.href = environment.authAppUrl;
+      // }
     }
   }
 
   private async fetch(method: string, endpoint: string, options: any = {}): Promise<any> {
+    console.log('this.accessToken 1: ', this.accessToken);
+
+    if (this.accessToken === '') {
+      this.accessToken = await this.cognitoService.getAccessToken() as string;
+    }
+
+    console.log('this.accessToken 2: ', this.accessToken);
+
     this._loading = true;
     endpoint = this.url + 'api/' + endpoint;
     const headers = options.headers ?? new HttpHeaders();
