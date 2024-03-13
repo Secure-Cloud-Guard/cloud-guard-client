@@ -13,10 +13,6 @@ export const handler = async(event) => {
     const fileExt = event.path.split('.').pop();
     let contentType = 'application/json';
 
-    if (['js'].includes(fileExt)) {
-      console.log('res.text(): ', res.text());
-    }
-
     switch (fileExt) {
       case 'html':
         contentType = 'text/html';
@@ -70,6 +66,11 @@ export const handler = async(event) => {
         };
       } else {
         const content = await res.text();
+
+        if (['js'].includes(fileExt)) {
+          console.log('await res.text(): ', content);
+        }
+
         return {
           statusCode: 200,
           body: content,
