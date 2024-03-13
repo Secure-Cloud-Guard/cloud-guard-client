@@ -14,8 +14,8 @@ export class HeaderComponent {
   protected readonly AppRoutes = AppRoutes;
 
   dropdownItemList: HeaderDropdownItem[] = [
-    { icon: 'account_circle', label: 'Profile', url: AppRoutes.MAIN.PROFILE.fullPath },
-    { icon: 'settings', label: 'Settings', url: AppRoutes.MAIN.SETTINGS.fullPath },
+    { icon: 'account_circle', label: 'Profile', disabled: true, url: AppRoutes.MAIN.PROFILE.fullPath },
+    { icon: 'settings', label: 'Settings', disabled: true, url: AppRoutes.MAIN.SETTINGS.fullPath },
     { icon: 'exit_to_app', label: 'Logout', url: AppRoutes.AUTH.LOGIN.fullPath },
   ];
 

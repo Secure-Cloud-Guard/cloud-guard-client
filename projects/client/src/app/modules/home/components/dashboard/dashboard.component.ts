@@ -16,14 +16,15 @@ export class DashboardComponent {
   sidenavItemList: SidenavItem[] = [
     { icon: 'lock', label: 'Personal Vault', url: AppRoutes.MAIN.PERSONAL_VAULT.fullPath },
     { icon: 'cloud', label: 'Storage', url: AppRoutes.MAIN.STORAGE.fullPath },
-    { icon: 'account_circle', label: 'Profile', url: AppRoutes.MAIN.PROFILE.fullPath },
-    { icon: 'settings', label: 'Settings', url: AppRoutes.MAIN.SETTINGS.fullPath },
+    { icon: 'account_circle', label: 'Profile', disabled: true, url: AppRoutes.MAIN.PROFILE.fullPath },
+    { icon: 'settings', label: 'Settings', disabled: true, url: AppRoutes.MAIN.SETTINGS.fullPath },
     { icon: 'exit_to_app', label: 'Logout', url: AppRoutes.AUTH.LOGIN.fullPath },
   ];
   tabGroupItemList: TabGroupItem[] = [
     { icon: 'lock', url: AppRoutes.MAIN.PERSONAL_VAULT.fullPath },
     { icon: 'cloud', url: AppRoutes.MAIN.STORAGE.fullPath },
-    { icon: 'account_circle', url: AppRoutes.MAIN.PROFILE.fullPath },
-    { icon: 'settings', url: AppRoutes.MAIN.SETTINGS.fullPath },
+    { icon: 'account_circle', disabled: true, url: AppRoutes.MAIN.PROFILE.fullPath },
+    { icon: 'settings', disabled: true, url: AppRoutes.MAIN.SETTINGS.fullPath },
+    { icon: 'exit_to_app', url: AppRoutes.AUTH.LOGIN.fullPath },
   ];
 }

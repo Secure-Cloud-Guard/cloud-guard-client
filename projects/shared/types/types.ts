@@ -47,5 +47,6 @@ export interface AlertData {
 export interface HeaderDropdownItem {
   icon: string,
   label: string,
+  disabled?: boolean,
   url: string
 }

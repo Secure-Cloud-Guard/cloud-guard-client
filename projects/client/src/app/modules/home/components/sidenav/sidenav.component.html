@@ -12,12 +12,12 @@
 
           @for (item of items; track item) {
             @if (item.url !== AppRoutes.AUTH.LOGIN.fullPath) {
-              <a mat-button [routerLink]="item.url" [ngClass]="sidenavBtnClass(item.url)" class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
+              <a mat-button [disabled]="item.disabled" [routerLink]="item.url" [ngClass]="sidenavBtnClass(item.url)" class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
                 <mat-icon>{{ item.icon }}</mat-icon>
                 <span>{{ item.label }}</span>
               </a>
             } @else {
-              <a mat-button (click)="logout()" [ngClass]="sidenavBtnClass(item.url)" class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
+              <a mat-button [disabled]="item.disabled" (click)="logout()" [ngClass]="sidenavBtnClass(item.url)" class="flex items-center !justify-start gap-4 ml-4 mr-4 !bg-opacity-[7%]">
                 <mat-icon>{{ item.icon }}</mat-icon>
                 <span>{{ item.label }}</span>
               </a>

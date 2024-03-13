@@ -5,9 +5,15 @@
 
   <nav mat-tab-nav-bar [color]="themeColorService.getPrimaryColor()" [tabPanel]="tabPanel" class="!flex !fixed bottom-0 left-0 right-0">
     @for (item of items; track item.url) {
-      <a mat-tab-link [routerLink]="item.url" [active]="routeService.currentUrl == item.url">
-        <mat-icon>{{ item.icon }}</mat-icon>
-      </a>
+      @if (item.url !== AppRoutes.AUTH.LOGIN.fullPath) {
+        <a mat-tab-link [disabled]="item.disabled" [routerLink]="item.url" [active]="routeService.currentUrl == item.url">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </a>
+      } @else {
+        <a mat-tab-link [disabled]="item.disabled" (click)="logout()" [routerLink]="item.url" [active]="routeService.currentUrl == item.url">
+          <mat-icon>{{ item.icon }}</mat-icon>
+        </a>
+      }
     }
   </nav>
 </div>

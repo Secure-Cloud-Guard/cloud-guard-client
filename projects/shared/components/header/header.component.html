@@ -9,12 +9,12 @@
   <mat-menu #menu="matMenu">
     @for (item of dropdownItemList; track item.url) {
       @if (item.url !== AppRoutes.AUTH.LOGIN.fullPath) {
-        <button class="custom-menu-btn" [routerLink]="item.url" mat-menu-item>
+        <button [disabled]="item.disabled" class="custom-menu-btn" [routerLink]="item.url" mat-menu-item>
           <mat-icon>{{ item.icon }}</mat-icon>
           <span>{{ item.label }}</span>
         </button>
       } @else {
-        <button class="custom-menu-btn" (click)="logout()" mat-menu-item>
+        <button [disabled]="item.disabled" class="custom-menu-btn" (click)="logout()" mat-menu-item>
           <mat-icon>{{ item.icon }}</mat-icon>
           <span>{{ item.label }}</span>
         </button>

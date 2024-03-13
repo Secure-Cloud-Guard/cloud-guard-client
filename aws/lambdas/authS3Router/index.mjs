@@ -68,7 +68,7 @@ export const handler = async(event) => {
         const content = await res.text();
 
         if (['js'].includes(fileExt)) {
-          console.log('await res.text(): ', content);
+          console.log('await res.text(): ', content.slice(0, 400));
         }
 
         return {

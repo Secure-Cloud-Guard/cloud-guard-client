@@ -9,6 +9,7 @@
 export interface SidenavItem {
   icon: string,
   label: string,
+  disabled?: boolean,
   url: string
 }
 
@@ -21,7 +22,8 @@ export interface SidenavItem {
  */
 export interface TabGroupItem {
   icon: string,
-  url: string
+  url: string,
+  disabled?: boolean,
 }
 
 /**

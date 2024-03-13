@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RouteService, ThemeColorService } from "@globalShared";
+import {AppRoutes, CognitoService, RouteService, ThemeColorService} from "@globalShared";
 import { TabGroupItem } from "@modules/home/types";
 
 @Component({
@@ -9,8 +9,15 @@ import { TabGroupItem } from "@modules/home/types";
 export class TabGroupComponent {
   @Input() items: TabGroupItem[] = [];
 
+  protected readonly AppRoutes = AppRoutes;
+
   constructor(
     protected readonly themeColorService: ThemeColorService,
-    protected readonly routeService: RouteService
+    protected readonly routeService: RouteService,
+    private cognitoService: CognitoService,
   ) { }
+
+  logout() {
+    this.cognitoService.signOut();
+  }
 }

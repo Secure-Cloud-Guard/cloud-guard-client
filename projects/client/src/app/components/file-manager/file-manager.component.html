@@ -1,5 +1,5 @@
 
-<div class="relative flex flex-col h-[calc(100vh-100px)] border custom-border-color {{ themeService.theme === Theme.Dark ? 'theme-dark' : 'theme-light' }}">
+<div class="relative flex flex-col max-[600px]:h-[calc(100vh-103px)] max-[639px]:h-[calc(100vh-112px)] h-[calc(100vh-100px)] border custom-border-color {{ themeService.theme === Theme.Dark ? 'theme-dark' : 'theme-light' }}">
 
   @if (!isKeySet() && type === FileManagerType.PersonalVault) {
     <div class="key-not-available">
@@ -35,26 +35,26 @@
     <div class="flex items-center gap-1 header-buttons">
       <input hidden type="file" #fileDropRef id="fileDropRef" multiple (change)="fileBrowseHandler($event.target)"/>
       @if (type === FileManagerType.PersonalVault || (type === FileManagerType.Storage && this.currentFolder?.owner)) {
-        <button mat-button (click)="createFolderDialog()">
-          <mat-icon>create_new_folder</mat-icon>
-          <span>New folder</span>
+        <button class="max-[930px]:!min-w-0" mat-button (click)="createFolderDialog()">
+          <mat-icon class="max-[930px]:!mx-1">create_new_folder</mat-icon>
+          <span class="max-[930px]:hidden">New folder</span>
         </button>
-        <button mat-button (click)="fileDropRef.click()" [disabled]="uploading">
-          <mat-icon>cloud_upload</mat-icon>
-          <span>Upload Files</span>
+        <button class="max-[930px]:!min-w-0" mat-button (click)="fileDropRef.click()" [disabled]="uploading">
+          <mat-icon class="max-[930px]:!mx-1">cloud_upload</mat-icon>
+          <span class="max-[930px]:hidden">Upload Files</span>
         </button>
       }
-      <button mat-button disabled>
-        <mat-icon>sort</mat-icon>
-        <span>Sort by</span>
+      <button class="max-[930px]:!min-w-0" mat-button disabled>
+        <mat-icon class="max-[930px]:!mx-1">sort</mat-icon>
+        <span class="max-[930px]:hidden">Sort by</span>
       </button>
-      <button mat-button *ngIf="type === FileManagerType.PersonalVault" (click)="resetKey()">
-        <mat-icon>vpn_key</mat-icon>
-        <span>Reset Key</span>
+      <button class="max-[930px]:!min-w-0" mat-button *ngIf="type === FileManagerType.PersonalVault" (click)="resetKey()">
+        <mat-icon class="max-[930px]:!mx-1">vpn_key</mat-icon>
+        <span class="max-[930px]:hidden">Reset Key</span>
       </button>
-      <button mat-button (click)="refresh(this.currentPath)">
-        <mat-icon>refresh</mat-icon>
-        <span>Refresh</span>
+      <button class="max-[930px]:!min-w-0" mat-button (click)="refresh(this.currentPath)">
+        <mat-icon class="max-[930px]:!mx-1">refresh</mat-icon>
+        <span class="max-[930px]:hidden">Refresh</span>
       </button>
     </div>
     <button class="custom-icon-btn small square" mat-icon-button (click)="toggleView()" matTooltip="Files View" matTooltipPosition="above">
@@ -63,7 +63,7 @@
   </div>
 
   <div class="flex h-[calc(100vh-135px)]">
-    <div class="flex overflow-y-auto min-w-[25%]">
+    <div class="max-[1060px]:hidden flex overflow-y-auto min-w-[25%]">
       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="file-tree">
         <mat-tree-node *matTreeNodeDef="let node" [ngClass]="{ 'active-folder': node.active }" (click)="toggleTreeNode(node, $event)" (dblclick)="openTreeNode(node)">
           @if (type === FileManagerType.Storage && node.sharing?.shared) {
@@ -175,7 +175,7 @@
               </ng-container>
               <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef> Name </th>
-                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                <td mat-cell class="max-[530px]:!max-w-[100px] max-[790px]:!max-w-[200px] max-[1070px]:!max-w-[200px] max-[1180px]:!max-w-[250px] !max-w-[350px]" *matCellDef="let element"> {{element.name}} </td>
               </ng-container>
               <ng-container matColumnDef="type">
                 <th mat-header-cell *matHeaderCellDef> Type </th>
@@ -190,8 +190,8 @@
                 </td>
               </ng-container>
               <ng-container matColumnDef="lastModified">
-                <th mat-header-cell *matHeaderCellDef> Last Modified </th>
-                <td mat-cell *matCellDef="let element"> {{ element.lastModified | date:'MMMM d, y H:mm' }} </td>
+                <th mat-header-cell class="max-[460px]:!hidden" *matHeaderCellDef> Last Modified </th>
+                <td mat-cell class="max-[460px]:!hidden" *matCellDef="let element"> {{ element.lastModified | date:'MMMM d, y H:mm' }} </td>
               </ng-container>
               <tr mat-header-row *matHeaderRowDef="listColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: listColumns;" (dblclick)="openFromList(row)" (contextmenu)="openFileMenu($event, row)"></tr>
