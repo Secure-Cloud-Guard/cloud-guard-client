@@ -107,7 +107,7 @@ export class CognitoService {
 
     setTimeout(() => {
       window.location.href = environment.clientAppUrl;
-    }, 2000);
+    }, 3000);
   }
 
   public async signOut() {
