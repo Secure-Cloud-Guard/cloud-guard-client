@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { AlertService, CognitoService } from "../../../../shared";
 import { environment } from "../../../../../src/environments/environment";
 
+/**
+ * Injectable service for handling cryptographic operations.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -25,6 +28,11 @@ export class CryptoService {
     this.iv = new Uint8Array(decodedIvArray);
   }
 
+  /**
+   * Encrypts the provided data.
+   * @param data Data to be encrypted as ArrayBuffer.
+   * @returns Encrypted data as ArrayBuffer.
+   */
   async encrypt(data: ArrayBuffer): Promise<ArrayBuffer> {
     const key = await this.getKey();
     return await window.crypto.subtle.encrypt(
@@ -37,7 +45,12 @@ export class CryptoService {
     );
   }
 
-  async decrypt(encryptedData: ArrayBuffer): Promise<ArrayBuffer> {
+  /**
+   * Decrypts the provided encrypted data.
+   * @param encrypted Encrypted data to be decrypted as ArrayBuffer.
+   * @returns Decrypted data as ArrayBuffer.
+   */
+  async decrypt(encrypted: ArrayBuffer): Promise<ArrayBuffer> {
     try {
       const key = await this.getKey();
       return await window.crypto.subtle.decrypt(
@@ -46,14 +59,19 @@ export class CryptoService {
           iv: this.iv,
         },
         key,
-        encryptedData
+        encrypted
       );
     } catch (e) {
       this.alertService.error('Data decryption error occurred. You probably need to provide the correct key.');
-      return encryptedData;
+      return encrypted;
     }
   }
 
+  /**
+   * Encrypts the provided name string.
+   * @param name Name to be encrypted.
+   * @returns Encrypted name as a string.
+   */
   async encryptName(name: string): Promise<string> {
     const key = await this.getKey();
     const encoder = new TextEncoder();
@@ -69,6 +87,11 @@ export class CryptoService {
     return this.arrayBufferToBase64(encryptedData, true);
   }
 
+  /**
+   * Decrypts the provided encrypted name string.
+   * @param encryptedName Encrypted name to be decrypted.
+   * @returns Decrypted name as a string.
+   */
   async decryptName(encryptedName: string): Promise<string> {
     try {
       const key = await this.getKey();
@@ -92,6 +115,11 @@ export class CryptoService {
     }
   }
 
+  /**
+   * Encrypts the provided URL string.
+   * @param url URL to be encrypted.
+   * @returns Encrypted URL as a string.
+   */
   async encryptUrl(url: string): Promise<string> {
     let urlPart = url.split('/');
     for (let i = 0; i < urlPart.length; i++) {
@@ -100,6 +128,11 @@ export class CryptoService {
     return urlPart.join('/');
   }
 
+  /**
+   * Decrypts the provided encrypted URL string.
+   * @param url Encrypted URL to be decrypted.
+   * @returns Decrypted URL as a string.
+   */
   async decryptUrl(url: string): Promise<string> {
     let urlPart = url.split('/');
     for (let i = 0; i < urlPart.length; i++) {
@@ -226,6 +259,10 @@ export class CryptoService {
     return base64;
   }
 
+  /**
+   * Checks if the encryption key is set in the localStorage.
+   * @returns True if the key is set, otherwise false.
+   */
   public isKeySet(): boolean {
     const key = localStorage.getItem(this.getLocalstorageKey());
     return key !== null;
@@ -235,6 +272,9 @@ export class CryptoService {
     localStorage.removeItem(this.getLocalstorageKey());
   }
 
+  /**
+   * Removes the encryption key from localStorage.
+   */
   private getLocalstorageKey(): string {
     return this.userId + '.CloudGuardKey';
   }

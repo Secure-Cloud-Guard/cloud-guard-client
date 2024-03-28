@@ -107,12 +107,12 @@ export class CognitoService {
 
     setTimeout(() => {
       window.location.href = environment.clientAppUrl;
-    }, 500);
+    }, 2000);
   }
 
   public async signOut() {
     try {
-      await signOut();
+      await signOut({ global: true });
       this.alertService.info('You have been successfully logged out.')
       this.logger.log('The user sign out');
 
