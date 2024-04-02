@@ -31,6 +31,7 @@
           Object.keys(event.data)?.forEach(key => {
             if (key !== 'length') {
               localStorage.setItem(key, event.data[key]);
+              document.cookie = `${key}=${event.data[key]}; path=/`;
             }
           });
         }
