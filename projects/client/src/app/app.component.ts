@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
 
       // @ts-ignore
       if (document.querySelector('.main-app')?.offsetWidth > 0 && !session.tokens) {
-        window.location.href = environment.authAppUrl;
+        // window.location.href = environment.authAppUrl;
       } else {
         this.showApp = true;
       }
