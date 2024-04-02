@@ -16,6 +16,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.cognitoService.fetchAuthSession().then(session => {
+
+      console.log('session: ', session);
+
       // @ts-ignore
       if (document.querySelector('.main-app')?.offsetWidth > 0 && !session.tokens) {
         window.location.href = environment.authAppUrl;
