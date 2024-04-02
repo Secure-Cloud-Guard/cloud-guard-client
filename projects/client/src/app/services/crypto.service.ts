@@ -275,11 +275,11 @@ export class CryptoService {
   /**
    * Removes the encryption key from localStorage.
    */
-  private getLocalstorageKey(): string {
+  getLocalstorageKey(): string {
     return this.userId + '.CloudGuardKey';
   }
 
-  private async importKey(keyArray: Uint8Array): Promise<CryptoKey> {
+  public async importKey(keyArray: Uint8Array): Promise<CryptoKey> {
     try {
       return await window.crypto.subtle.importKey(
         'raw',
@@ -300,7 +300,7 @@ export class CryptoService {
     }).join('');
   }
 
-  private hexStringToArrayBuffer(hexString: string): Uint8Array {
+  public hexStringToArrayBuffer(hexString: string): Uint8Array {
     const buffer = new Uint8Array(hexString.length / 2);
     for (let i = 0; i < hexString.length; i += 2) {
       buffer[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
