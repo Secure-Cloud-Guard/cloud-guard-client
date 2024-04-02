@@ -250,9 +250,9 @@ export class CloudService {
     }
 
     if (error.status === StatusCodes.UNAUTHORIZED) {
-      if (!window.location.href.startsWith(environment.authAppUrl)) {
-        window.location.href = environment.authAppUrl;
-      }
+      // if (!window.location.href.startsWith(environment.authAppUrl)) {
+      //   window.location.href = environment.authAppUrl;
+      // }
     }
   }
 
