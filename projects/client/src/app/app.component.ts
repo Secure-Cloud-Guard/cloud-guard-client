@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // set delay for 3 seconds
     this.cognitoService.fetchAuthSession().then(session => {
 
       console.log('session: ', session);
@@ -22,7 +23,8 @@ export class AppComponent implements OnInit {
 
       // @ts-ignore
       if (document.querySelector('.main-app')?.offsetWidth > 0 && !session.tokens) {
-        window.location.href = environment.authAppUrl;
+        // window.location.href = environment.authAppUrl;
+        console.log("REDIRECT TO AUTH")
       } else {
         this.showApp = true;
       }
