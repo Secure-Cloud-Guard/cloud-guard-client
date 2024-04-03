@@ -549,7 +549,7 @@ export class FileManagerComponent implements AfterViewInit, OnInit {
 @Component({
   selector: 'create-folder-dialog',
   standalone: true,
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule, MatDialogClose, MatFormFieldModule, MatInputModule, FormsModule],
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule, MatDialogClose, MatFormFieldModule, MatInputModule, FormsModule, NgIf],
   template: `
     <h2 mat-dialog-title>Create New Folder</h2>
     <mat-dialog-content class="mat-typography">
@@ -560,7 +560,7 @@ export class FileManagerComponent implements AfterViewInit, OnInit {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-button (click)="create()" [color]="themeColorService.getPrimaryColor()">Create</button>
+      <button mat-button (click)="create()" *ngIf="folderName !== ''" [color]="themeColorService.getPrimaryColor()">Create</button>
     </mat-dialog-actions>
   `
 })
