@@ -20,9 +20,6 @@ export class AppComponent implements OnInit {
     if (document.querySelector('.main-app')?.offsetWidth > 0) {
       const cookies = this.getAllCookies();
 
-      console.log('Cookies: ', this.getAllCookies());
-      console.log('LocalStorage: ', localStorage);
-
       for (const key in cookies) {
         if (cookies.hasOwnProperty(key)) {
           localStorage.setItem(key, cookies[key]);
@@ -31,14 +28,9 @@ export class AppComponent implements OnInit {
     }
 
     this.cognitoService.fetchAuthSession().then(session => {
-
-      console.log('session: ', session);
-      console.log('session.tokens: ', session);
-
       // @ts-ignore
       if (document.querySelector('.main-app')?.offsetWidth > 0 && !session.tokens) {
-        // window.location.href = environment.authAppUrl;
-        console.log("REDIRECT TO AUTH")
+        window.location.href = environment.authAppUrl;
       } else {
         this.showApp = true;
       }

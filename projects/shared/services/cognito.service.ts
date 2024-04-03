@@ -116,9 +116,9 @@ export class CognitoService {
       this.alertService.info('You have been successfully logged out.')
       this.logger.log('The user sign out');
 
-      // if (!window.location.href.startsWith(environment.authAppUrl)) {
-      //   window.location.href = environment.authAppUrl;
-      // }
+      if (!window.location.href.startsWith(environment.authAppUrl)) {
+        window.location.href = environment.authAppUrl;
+      }
     } catch (error) {
       this.logger.error('error signing out: ', error);
     }
